@@ -1,25 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react"
+import Body from "./components/Body"
+import Footer from "./components/Footer"
+import TopBar from "./components/Topbar"
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const [active, setIsActive] = useState("Klassen")
+	return (
+		<div className="flex flex-col min-h-screen w-full font-['Inter'] dark:text-gray-50 text-gray-900">
+			<TopBar />
+			<Body />
+			<Footer active={active} setIsActive={setIsActive} />
+		</div>
+	)
 }
 
-export default App;
+export default App
