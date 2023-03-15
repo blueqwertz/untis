@@ -9,7 +9,7 @@ function App() {
 		<div className="flex flex-col min-h-screen w-full font-['Inter'] dark:text-gray-50 text-gray-900">
 			<TopBar />
 			<Body />
-			<Footer active={active} setIsActive={setIsActive} />
+			{/* <Footer active={active} setIsActive={setIsActive} /> */}
 		</div>
 	)
 }

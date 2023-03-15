@@ -1,5 +1,68 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
+:root {
+	--timetable-orange: #e8a748;
+	--timetable-purple: #b48ec2;
+	--timetable-cancel: #b2b3b4;
+	--timetable-free: #d8dbe2;
+	--timetable-exam: #87ceeb;
+}
+
+[data-state="STANDARD"] {
+	background-color: var(--timetable-orange);
+}
+
+[data-state="ADDITIONAL"] {
+	background-color: var(--timetable-purple);
+}
+
+[data-state="SUBSTITUTION"] {
+	background-color: var(--timetable-purple);
+}
+
+[data-state="ROOMSUBSTITUTION"] {
+	background-color: var(--timetable-purple);
+}
+
+[data-state="SHIFT"] {
+	background-color: var(--timetable-purple);
+}
+
+[data-state="EXAM"] {
+	background-color: var(--timetable-exam);
+}
+
+[data-state="CANCEL"] {
+	background-color: var(--timetable-cancel);
+	text-decoration: line-through;
+}
+
+[data-state="FREE"] {
+	background-color: var(--timetable-free);
+	text-decoration: line-through;
+}
+
+@media screen and (max-width: 1200px) {
+	body[data-day-view="false"] [data-hour] > :nth-child(n + 3) {
+		display: none;
+	}
+
+	body[data-day-view="false"] [data-hour] > :nth-child(n + 2) > div > * {
+		display: none;
+	}
+
+	body[data-day-view="false"] [data-hour] > :nth-child(n + 2) {
+		flex: 0;
+		padding: 0px 7px;
+		position: relative;
+	}
+
+	body[data-day-view="false"] [data-hour] > :nth-child(n + 2)::before {
+		content: "...";
+		position: absolute;
+	}
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
