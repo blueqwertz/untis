@@ -19,7 +19,6 @@ function Footer({ active, setIsActive }) {
 							key={option}
 							onClick={() => {
 								setIsActive(option)
-								console.log(active)
 							}}
 							className={`flex flex-col justify-center items-center text-lg cursor-pointer select-none ${option === active ? "" : "text-gray-500 dark:text-slate-400"}`}
 						>

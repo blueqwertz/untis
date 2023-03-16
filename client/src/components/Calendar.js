@@ -1,4 +1,5 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
+import axios from "../api/axios"
 
 function Calendar() {
 	const data = {
@@ -128,6 +129,16 @@ function Calendar() {
 			10: [],
 		},
 	}
+	const [teacherData, setTeacherData] = useState({})
+
+	useEffect(() => {
+		const getData = async () => {
+			const response = await axios.get("/list")
+			setTeacherData(response.data)
+			console.log(response)
+		}
+		getData()
+	}, [])
 
 	const [dayView, setDayView] = useState(undefined)
 
@@ -183,7 +194,7 @@ function Calendar() {
 													<div className="w-full h-full text-sm flex justify-around items-center flex-col lg:flex-row text-center flex-wrap">
 														<div className="flex flex-col justify-center items-center">
 															<div className="italic font-semibold">{curHour["subject"]}</div>
-															<div>{curHour["teacher"]}</div>
+															<div className="hover:underline cursor-pointer relative group">{curHour["teacher"]}</div>
 														</div>
 														<div className="flex flex-col justify-center items-center">
 															<div>{curHour["room"]}</div>
