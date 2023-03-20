@@ -12,7 +12,10 @@
 	"license": "ISC",
 	"dependencies": {
 		"cors": "^2.8.5",
+		"date-fns": "^2.29.3",
 		"express": "^4.17.1",
-		"nodemon": "^2.0.21"
+		"nodemon": "^2.0.21",
+		"sqlite3": "^5.1.6",
+		"uuid": "^9.0.0"
 	}
 }

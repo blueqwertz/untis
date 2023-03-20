@@ -5,34 +5,50 @@ function searchDictionary(query, dictionary) {
 
 	for (let key in dictionary) {
 		let entry = dictionary[key]
-		let name = entry.name.toLowerCase()
-		let firstName = entry.firstName.toLowerCase()
-		let shortName = entry.shortName.toLowerCase()
-		let lastName = entry.name.toLowerCase()
 
-		if (name === query.toLowerCase() || firstName === query.toLowerCase() || shortName === query.toLowerCase() || lastName === query.toLowerCase()) {
-			results.push({ entry: entry, score: 2 })
-			continue
-		}
+		if (entry.type == "Lehrer") {
+			let name = entry.name.toLowerCase()
+			let firstName = entry.firstName.toLowerCase()
+			let lastName = entry.lastName.toLowerCase()
 
-		if (name.startsWith(query.toLowerCase()) || firstName.startsWith(query.toLowerCase()) || shortName.startsWith(query.toLowerCase()) || lastName.startsWith(query.toLowerCase())) {
-			results.push({ entry: entry, score: 1 })
-			continue
-		}
+			if (name === query.toLowerCase() || firstName === query.toLowerCase() || lastName === query.toLowerCase()) {
+				results.push({ entry: entry, score: 2 })
+				continue
+			}
 
-		let nameDistance = levenshteinDistance(name, query.toLowerCase())
-		let firstNameDistance = levenshteinDistance(firstName, query.toLowerCase())
-		let shortNameDistance = levenshteinDistance(shortName, query.toLowerCase())
-		let lastNameDistance = levenshteinDistance(lastName, query.toLowerCase())
+			if (name.startsWith(query.toLowerCase()) || firstName.startsWith(query.toLowerCase()) || lastName.startsWith(query.toLowerCase())) {
+				results.push({ entry: entry, score: 1 })
+				continue
+			}
 
-		if (nameDistance <= name.length * threshold) {
-			results.push({ entry: entry, score: 1 - nameDistance / name.length })
-		} else if (firstNameDistance <= firstName.length * threshold) {
-			results.push({ entry: entry, score: 1 - firstNameDistance / firstName.length })
-		} else if (shortNameDistance <= shortName.length * threshold) {
-			results.push({ entry: entry, score: 1 - shortNameDistance / shortName.length })
-		} else if (lastNameDistance <= lastName.length * threshold) {
-			results.push({ entry: entry, score: 1 - lastNameDistance / lastName.length })
+			let nameDistance = levenshteinDistance(name, query.toLowerCase())
+			let firstNameDistance = levenshteinDistance(firstName, query.toLowerCase())
+			let lastNameDistance = levenshteinDistance(lastName, query.toLowerCase())
+
+			if (nameDistance <= name.length * threshold) {
+				results.push({ entry: entry, score: 1 - nameDistance / name.length })
+			} else if (firstNameDistance <= firstName.length * threshold) {
+				results.push({ entry: entry, score: 1 - firstNameDistance / firstName.length })
+			} else if (lastNameDistance <= lastName.length * threshold) {
+				results.push({ entry: entry, score: 1 - lastNameDistance / lastName.length })
+			}
+		} else {
+			let name = entry.name.toLowerCase()
+			if (name === query.toLowerCase()) {
+				results.push({ entry: entry, score: 2 })
+				continue
+			}
+
+			if (name.startsWith(query.toLowerCase())) {
+				results.push({ entry: entry, score: 1 })
+				continue
+			}
+
+			let nameDistance = levenshteinDistance(name, query.toLowerCase())
+
+			if (nameDistance <= name.length * threshold) {
+				results.push({ entry: entry, score: 1 - nameDistance / name.length })
+			}
 		}
 	}
 

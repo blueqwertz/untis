@@ -1,10 +1,10 @@
 import React from "react"
 import Calendar from "./Calendar"
 
-function Body() {
+function Body({ dataOptions, setDataOptions }) {
 	return (
-		<main className="grow bg-gray-200 dark:bg-slate-900 flex">
-			<Calendar />
+		<main className="grow bg-gray-200 dark:bg-slate-900 flex flex-col lg:flex-row">
+			<Calendar dataOptions={dataOptions} setDataOptions={setDataOptions} />
 		</main>
 	)
 }

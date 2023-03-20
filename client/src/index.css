@@ -8,7 +8,7 @@
 	--timetable-exam: #87ceeb;
 }
 
-[data-state="STANDARD"] {
+[data-state] {
 	background-color: var(--timetable-orange);
 }
 
