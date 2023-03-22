@@ -20,7 +20,7 @@ function getFriday(d) {
 
 router.post("/group/:id", async (req, res) => {
 	const id = req.params.id
-	let date = req.body?.date || new Date().toISOString()
+	let date = req.body.date || new Date().toISOString()
 	let startDate = getMonday(new Date(date))
 	let endDate = getFriday(new Date(date))
 	await wu.db.beginCommit()
@@ -33,7 +33,7 @@ router.post("/group/:id", async (req, res) => {
 
 router.post("/teacher/:id", async (req, res) => {
 	const id = req.params?.id
-	let date = req.body?.date || new Date().toISOString()
+	let date = req.body.date || new Date().toISOString()
 	let startDate = getMonday(new Date(date))
 	let endDate = getFriday(new Date(date))
 	const holidays = await db.getHolidaysByDate(startDate, endDate)
@@ -43,7 +43,7 @@ router.post("/teacher/:id", async (req, res) => {
 
 router.post("/room/:id", async (req, res) => {
 	const id = req.params.id
-	let date = req.body?.date || new Date().toISOString()
+	let date = req.body.date || new Date().toISOString()
 	let startDate = getMonday(new Date(date))
 	let endDate = getFriday(new Date(date))
 	const holidays = await db.getHolidaysByDate(startDate, endDate)
