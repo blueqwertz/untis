@@ -12,9 +12,10 @@ const webuntis = new Webuntis(db)
 webuntis.auto_fetcher(10)
 
 const app = express()
-const PORT = 3000
+const PORT = 3001
 
 app.use(logger)
+app.use(express.json())
 
 app.use(express.static(path.join(__dirname, "../client/build")))
 

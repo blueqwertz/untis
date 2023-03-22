@@ -11,6 +11,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	const [lastFetch, setLastFetch] = useState(undefined)
 	const [hidden, setHidden] = useState(localStorage.getItem("hidden") ? JSON.parse(localStorage.getItem("hidden")) : {})
 	const [errMsg, setErrMsg] = useState("")
+	const [focus, setFocus] = useState(0)
 
 	Date.prototype.formatLastFetch = function () {
 		let now = new Date()
@@ -76,6 +77,9 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 					try {
 						const date = event.date.replaceAll("-", "")
 						const hour = timeLookUpTable[event.startTime]
+						if (!grid[date]) {
+							grid[date] = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] }
+						}
 						if (!grid[date][hour]) {
 							grid[date][hour] = new Array(10)
 						}
@@ -255,7 +259,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 														return aHidden - bHidden
 													})
 													.map((hourclass) => {
-														return <Class key={data[day][hour][hourclass].id} curHour={data[day][hour][hourclass]} classHidden={hidden[dataOptions.id]?.includes(data[day][hour][hourclass].subjectID)} editMode={editMode} setHidden={setHidden} dataOptions={dataOptions} />
+														return <Class key={data[day][hour][hourclass].id} curHour={data[day][hour][hourclass]} classHidden={hidden[dataOptions.id]?.includes(data[day][hour][hourclass].subjectID)} editMode={editMode} setHidden={setHidden} dataOptions={dataOptions} focus={focus} setFocus={setFocus} infoData={searchData} />
 													})}
 											</div>
 										)
