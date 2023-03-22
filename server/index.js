@@ -1,6 +1,7 @@
 const express = require("express")
 const cors = require("cors")
 const corsOptions = require("./config/corsOptions")
+const path = require("path")
 const { logger } = require("./middleware/logEvents")
 
 const db = require("./utils/Database")
@@ -11,14 +12,21 @@ const webuntis = new Webuntis(db)
 webuntis.auto_fetcher(10)
 
 const app = express()
-const PORT = 3001
+const PORT = 3000
 
-app.use(cors(corsOptions))
 app.use(logger)
 
-app.use("/data", require("./routes/DataRouter"))
+app.use(express.static(path.join(__dirname, "../client/build")))
 
-app.get("/", (req, res) => {
+app.get("*", (req, res) => {
+	res.sendFile(path.join(__dirname, "../client/build/index.html"))
+})
+
+app.use(cors(corsOptions))
+
+app.use("/api/data", require("./routes/DataRouter"))
+
+app.get("/api", (req, res) => {
 	res.send({ message: "Successful response." })
 })
 

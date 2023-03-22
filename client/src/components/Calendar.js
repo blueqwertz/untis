@@ -129,7 +129,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 				setIsLoading(true)
 			}
 			try {
-				const response = await axios.get(`/data/${dataOptions.type}/${dataOptions.id}?date="${new Date(dataOptions.date).toISOString().slice(0, 10)}"`)
+				const response = await axios.post(`/data/${dataOptions.type}/${dataOptions.id}`, { date: new Date(dataOptions.date).toISOString().slice(0, 10) })
 				const result = await formatData(response.data.classes, response.data.holidays)
 				setErrMsg("")
 				await setDataContent(result)
@@ -157,7 +157,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	useEffect(() => {
 		const getData = async () => {
 			try {
-				const response = await axios.get("/data/list")
+				const response = await axios.post("/data/list")
 				setSearchData([
 					...response.data.rooms.map((entry) => {
 						return {

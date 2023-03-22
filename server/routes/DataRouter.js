@@ -7,7 +7,7 @@ const wu = new Webuntis(db)
 function getMonday(d) {
 	d = new Date(d)
 	var day = d.getDay(),
-		diff = d.getDate() - day + (day == 0 ? -5 : 2)
+		diff = d.getDate() - day + (day == 0 ? -6 : 1)
 	return new Date(d.setDate(diff)).toISOString().slice(0, 10)
 }
 
@@ -18,9 +18,9 @@ function getFriday(d) {
 	return new Date(d.setDate(diff)).toISOString().slice(0, 10)
 }
 
-router.get("/group/:id", async (req, res) => {
+router.post("/group/:id", async (req, res) => {
 	const id = req.params.id
-	let date = req.query?.date || new Date().toISOString()
+	let date = req.body?.date || new Date().toISOString()
 	let startDate = getMonday(new Date(date))
 	let endDate = getFriday(new Date(date))
 	await wu.db.beginCommit()
@@ -31,9 +31,9 @@ router.get("/group/:id", async (req, res) => {
 	res.send({ classes, holidays })
 })
 
-router.get("/teacher/:id", async (req, res) => {
+router.post("/teacher/:id", async (req, res) => {
 	const id = req.params?.id
-	let date = req.query?.date || new Date().toISOString()
+	let date = req.body?.date || new Date().toISOString()
 	let startDate = getMonday(new Date(date))
 	let endDate = getFriday(new Date(date))
 	const holidays = await db.getHolidaysByDate(startDate, endDate)
@@ -41,9 +41,9 @@ router.get("/teacher/:id", async (req, res) => {
 	res.send({ classes, holidays })
 })
 
-router.get("/room/:id", async (req, res) => {
+router.post("/room/:id", async (req, res) => {
 	const id = req.params.id
-	let date = req.query?.date || new Date().toISOString()
+	let date = req.body?.date || new Date().toISOString()
 	let startDate = getMonday(new Date(date))
 	let endDate = getFriday(new Date(date))
 	const holidays = await db.getHolidaysByDate(startDate, endDate)
@@ -51,9 +51,9 @@ router.get("/room/:id", async (req, res) => {
 	res.send({ classes, holidays })
 })
 
-router.get("")
+router.post("")
 
-router.get("/list", async (req, res) => {
+router.post("/list", async (req, res) => {
 	const data = await db.getRoomsTeachersGroups()
 	res.send(data)
 })

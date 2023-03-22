@@ -12,7 +12,7 @@ function TopBar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	useEffect(() => {
 		const getData = async () => {
 			try {
-				const response = await axios.get("/data/list")
+				const response = await axios.post("/data/list")
 				setTeacherData([
 					...response.data.rooms.map((entry) => {
 						return {
