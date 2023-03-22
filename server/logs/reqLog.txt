@@ -7202,3 +7202,9 @@
 20230322	15:10:18	ea0cc716-4e6e-47bc-8a6e-c8a67a8af6e1	POST	http://localhost:3000	/api/data/list
 20230322	15:10:18	4ad562f3-5eff-4dae-a015-cb6bf742cf3b	POST	http://localhost:3000	/api/data/group/1810
 20230322	15:10:18	10fe2d98-5510-4ff4-944b-ae7bfe982b76	GET	undefined	/static/css/main.5b43de61.css.map
+20230322	15:10:48	4836e2c7-ab66-4d1b-a1a3-a9869aa8d0f2	GET	undefined	/
+20230322	15:10:48	4d07b719-2786-4082-b67c-3876c8ad7192	GET	undefined	/static/js/main.fc45c502.js
+20230322	15:10:48	4e9b0cd4-53c2-4fcc-9b48-0995665778ca	GET	undefined	/static/css/main.5b43de61.css
+20230322	15:10:48	3a741ad1-1e7c-4696-aaaa-e7602e0a2cd0	POST	http://localhost:3000	/api/data/list
+20230322	15:10:48	96d77cb2-b52e-4bd1-8527-678bd69b33b1	POST	http://localhost:3000	/api/data/group/1810
+20230322	15:10:48	590610e9-b42a-44f6-97af-860c72056336	POST	http://localhost:3000	/api/data/list
