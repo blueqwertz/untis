@@ -43,7 +43,7 @@ class Webuntis {
 				data,
 			}
 		} catch (err) {
-			console.log("Fetch failed:", url)
+			console.log("Fetch failed:", url, err)
 		}
 	}
 
@@ -61,58 +61,62 @@ class Webuntis {
 	async fetch_group_id(id, date) {
 		try {
 			const response = await this.fetchWithCookies(`https://neilo.webuntis.com/WebUntis/api/public/timetable/weekly/data?elementType=1&elementId=${id}&date=${date}&formatId=1`)
-			response.data.data.result.data.elements.map((info) => {
-				switch (info.type) {
-					case 1:
-						this.db.addGroup(info.id, info.name)
-						break
-					case 2:
-						this.db.addTeacher(info.id, info.name)
-						break
-					case 3:
-						this.db.addSubject(info.id, info.name)
-						break
-					case 4:
-						this.db.addRoom(info.id, info.name)
-						break
-				}
-			})
-			for (let hour of response.data.data.result.data.elementPeriods[id]) {
-				const hour_info = {
-					groups: [],
-					teacher: 0,
-					subject: 0,
-					room: 0,
-				}
-				hour.elements.map((info) => {
+			if (response?.status == 200) {
+				response.data.data.result.data.elements.map((info) => {
 					switch (info.type) {
 						case 1:
-							hour_info.groups.push(info.id)
+							this.db.addGroup(info.id, info.name)
 							break
 						case 2:
-							hour_info.teacher = info.id
+							this.db.addTeacher(info.id, info.name)
 							break
 						case 3:
-							hour_info.subject = info.id
+							this.db.addSubject(info.id, info.name)
 							break
 						case 4:
-							hour_info.room = info.id
+							this.db.addRoom(info.id, info.name)
 							break
 					}
 				})
-				const formatDate = (dateInt) => {
-					function makeFull(x) {
-						if (x < 10) {
-							return "0" + x
-						}
-						return x
+				for (let hour of response.data.data.result.data.elementPeriods[id]) {
+					const hour_info = {
+						groups: [],
+						teacher: 0,
+						subject: 0,
+						room: 0,
 					}
-					const year = Math.floor(dateInt / 10000)
-					const month = Math.floor((dateInt % 10000) / 100)
-					const day = dateInt % 100
-					return `${year}-${makeFull(month)}-${makeFull(day)}`
+					hour.elements.map((info) => {
+						switch (info.type) {
+							case 1:
+								hour_info.groups.push(info.id)
+								break
+							case 2:
+								hour_info.teacher = info.id
+								break
+							case 3:
+								hour_info.subject = info.id
+								break
+							case 4:
+								hour_info.room = info.id
+								break
+						}
+					})
+					const formatDate = (dateInt) => {
+						function makeFull(x) {
+							if (x < 10) {
+								return "0" + x
+							}
+							return x
+						}
+						const year = Math.floor(dateInt / 10000)
+						const month = Math.floor((dateInt % 10000) / 100)
+						const day = dateInt % 100
+						return `${year}-${makeFull(month)}-${makeFull(day)}`
+					}
+					await this.db.addClass(hour.id, hour_info.subject, hour.lessonId, hour_info.teacher, hour_info.room, hour.startTime, hour.endTime, hour_info.groups, hour_info.groups.join(","), formatDate(hour.date), hour.cellState, hour.lessonText)
 				}
-				await this.db.addClass(hour.id, hour_info.subject, hour.lessonId, hour_info.teacher, hour_info.room, hour.startTime, hour.endTime, hour_info.groups, hour_info.groups.join(","), formatDate(hour.date), hour.cellState, hour.lessonText)
+			} else {
+				console.log(`No response ${id}`)
 			}
 		} catch (err) {
 			console.log(err)
