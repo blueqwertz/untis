@@ -5,12 +5,12 @@ import TopBar from "./components/Topbar"
 
 function App() {
 	const [dataOptions, setDataOptions] = useState(localStorage.getItem("dataOptions") ? JSON.parse(localStorage.getItem("dataOptions")) : { id: 1810, type: "group", name: "8BD", date: new Date().toISOString().slice(0, 10) })
-	const [editMode, setEditMode] = useState(true)
+	const [editMode, setEditMode] = useState(false)
 
 	return (
-		<div className="flex flex-col min-h-screen w-full font-['Inter'] dark:text-gray-50 text-gray-900">
+		<div className="flex flex-col min-h-screen w-full dark:text-gray-50 text-gray-900">
 			<TopBar dataOptions={dataOptions} setDataOptions={setDataOptions} editMode={editMode} setEditMode={setEditMode} />
-			<Body dataOptions={dataOptions} setDataOptions={setDataOptions} editMode={editMode} />
+			<Body dataOptions={dataOptions} setDataOptions={setDataOptions} editMode={editMode} setEditMode={setEditMode} />
 			{/* <Footer active={active} setIsActive={setIsActive} /> */}
 		</div>
 	)

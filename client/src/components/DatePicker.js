@@ -19,7 +19,7 @@ function DatePicker({ showDatePicker, dataOptions, setDataOptions }) {
 	}
 
 	return (
-		<div className={`font-medium absolute top-full right-1/2 px-3 py-2 pb-1 mt-1 z-[11] bg-gray-200 border-2 border-gray-400 dark:bg-slate-800 dark:border-slate-500 flex flex-col gap-1 items-center origin-top transition-all translate-x-1/2 ${showDatePicker ? "" : "opacity-0 scale-90 pointer-events-none"}`}>
+		<div className={`font-medium absolute top-full right-1/2 px-3 py-2 pb-1 mt-3 sm:mt-2 z-[11] bg-gray-200 border-2 border-gray-400 dark:bg-slate-800 dark:border-slate-500 flex flex-col gap-1 items-center origin-top transition-all translate-x-1/2 sm:right-0 sm:translate-x-0 ${showDatePicker ? "" : "opacity-0 scale-90 pointer-events-none"} select-none`}>
 			<div className="flex gap-2 items-center justify-center">
 				<div
 					className="hover:cursor-pointer"
@@ -30,7 +30,7 @@ function DatePicker({ showDatePicker, dataOptions, setDataOptions }) {
 						setDataOptions({ ...dataOptions, date: newDate.toISOString().slice(0, 10) })
 					}}
 				>
-					<RiArrowLeftLine />
+					<RiArrowLeftLine className="w-[20px] h-[20px]" />
 				</div>
 				<div className="whitespace-nowrap w-[95px] text-center">
 					{getMonday(new Date(dataOptions.date))} - {getFriday(new Date(dataOptions.date))}
@@ -44,7 +44,7 @@ function DatePicker({ showDatePicker, dataOptions, setDataOptions }) {
 						setDataOptions({ ...dataOptions, date: newDate.toISOString().slice(0, 10) })
 					}}
 				>
-					<RiArrowRightLine />
+					<RiArrowRightLine className="w-[20px] h-[20px]" />
 				</div>
 			</div>
 			<div

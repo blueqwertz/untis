@@ -20,7 +20,7 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions }) 
 			<input
 				type="text"
 				placeholder="Lehrer, Klasse, Raum"
-				className="text-md font-medium shrink font-['Inter'] px-3 py-2 rounded-none outline-none bg-gray-200 border-2 border-gray-400 dark:bg-slate-800 dark:border-slate-500 w-full"
+				className="text-md font-medium shrink px-3 py-2 rounded-none outline-none bg-gray-200 border-2 border-gray-400 dark:bg-slate-800 dark:border-slate-500 w-full"
 				onInput={(e) => {
 					e.preventDefault()
 					setSearch(e.target.value)

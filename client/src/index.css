@@ -1,5 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
+*,
+input {
+	font-family: "Inter";
+}
+
 :root {
 	--timetable-orange: #e8a748;
 	--timetable-purple: #b48ec2;
@@ -43,21 +48,21 @@
 }
 
 @media screen and (max-width: 1200px) {
-	body[data-day-view="false"] [data-hour] > :nth-child(n + 3) {
+	body[data-day-view="false"] [data-hour] > :not(.hidden):nth-child(n + 3) {
 		display: none;
 	}
 
-	body[data-day-view="false"] [data-hour] > :nth-child(n + 2) > div > * {
+	body[data-day-view="false"] [data-hour] > :nth-child(n + 2):not(.hidden) > div > * {
 		display: none;
 	}
 
-	body[data-day-view="false"] [data-hour] > :nth-child(n + 2) {
+	body[data-day-view="false"] [data-hour] > :nth-child(n + 2):not(.hidden) {
 		flex: 0;
 		padding: 0px 7px;
 		position: relative;
 	}
 
-	body[data-day-view="false"] [data-hour] > :nth-child(n + 2)::before {
+	body[data-day-view="false"] [data-hour] > :nth-child(n + 2):not(.hidden)::before {
 		content: "...";
 		position: absolute;
 	}

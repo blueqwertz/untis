@@ -8,16 +8,7 @@ const db = require("./utils/Database")
 const Webuntis = require("./utils/WebUntis")
 const webuntis = new Webuntis(db)
 
-// webuntis.auto_fetcher(4)
-
-// const fetcher = () => {
-// 	setTimeout(async () => {
-// 		await webuntis.fetch_week(0)
-// 		fetcher()
-// 	}, 1 * 1000)
-// }
-
-// fetcher()
+webuntis.auto_fetcher(10)
 
 const app = express()
 const PORT = 3001
@@ -25,7 +16,7 @@ const PORT = 3001
 app.use(cors(corsOptions))
 app.use(logger)
 
-app.use("/data", require("./routes/data"))
+app.use("/data", require("./routes/DataRouter"))
 
 app.get("/", (req, res) => {
 	res.send({ message: "Successful response." })

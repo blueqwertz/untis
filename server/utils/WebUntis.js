@@ -9,6 +9,20 @@ class Webuntis {
 		}
 	}
 
+	getMonday(d) {
+		d = new Date(d)
+		var day = d.getDay(),
+			diff = d.getDate() - day + (day == 0 ? -5 : 2)
+		return new Date(d.setDate(diff)).toISOString().slice(0, 10)
+	}
+
+	getFriday(d) {
+		d = new Date(d)
+		var day = d.getDay(),
+			diff = d.getDate() + (5 - day) + (day == 0 ? -6 : 1)
+		return new Date(d.setDate(diff)).toISOString().slice(0, 10)
+	}
+
 	async fetchWithCookies(url, cookies = this.cookies) {
 		try {
 			const cookieHeader = Object.entries(cookies)
@@ -101,7 +115,7 @@ class Webuntis {
 				await this.db.addClass(hour.id, hour_info.subject, hour.lessonId, hour_info.teacher, hour_info.room, hour.startTime, hour.endTime, hour_info.groups, hour_info.groups.join(","), formatDate(hour.date), hour.cellState, hour.lessonText)
 			}
 		} catch (err) {
-			return
+			console.log(err)
 		}
 	}
 
@@ -117,16 +131,40 @@ class Webuntis {
 
 	async fetch_week(x) {
 		await this.db.beginCommit()
-		console.log("start", x)
 		const currentDate = new Date()
 		const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + x * 7)
+		await this.db.removeStartEndDate(this.getMonday(targetDate), this.getFriday(targetDate))
 		const formattedDate = targetDate.toISOString().slice(0, 10)
 		await this.fetch_all(formattedDate)
-		console.log("end", x)
 		await this.db.submitCommit()
 	}
 
-	auto_fetcher(range) {}
+	auto_fetcher(range) {
+		var index = 0
+		const fetcher = async () => {
+			let fetched = false
+			for (let i = 0; i <= range; i++) {
+				if ((index - (Math.pow(2, i) - 1)) % Math.pow(2, i + 1) == 0) {
+					fetched = true
+					console.log("STARTING FETCH", i)
+					try {
+						await this.fetch_week(i)
+					} catch (err) {
+						console.log(err)
+					}
+					break
+				}
+			}
+			if (!fetched) {
+				this.fetch_week(0)
+			}
+			index += 1
+			setTimeout(() => {
+				fetcher()
+			}, 30 * 1000)
+		}
+		fetcher()
+	}
 }
 
 module.exports = Webuntis

@@ -71,7 +71,9 @@ function TopBar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 					<AiOutlineEdit
 						className="w-6 h-6"
 						onClick={() => {
-							setEditMode(!editMode)
+							if (dataOptions.type == "group") {
+								setEditMode(!editMode)
+							}
 						}}
 					/>
 				</div>

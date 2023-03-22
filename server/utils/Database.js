@@ -907,7 +907,6 @@ db.serialize(() => {
 async function beginCommit() {
 	if (!isTransaction) {
 		isTransaction = true
-		console.log("BEGIN transaction")
 		db.run("BEGIN")
 	}
 }
@@ -915,9 +914,19 @@ async function beginCommit() {
 async function submitCommit() {
 	if (isTransaction) {
 		isTransaction = false
-		console.log("COMMIT transaction")
 		db.run("COMMIT")
 	}
+}
+
+async function removeStartEndDate(startDate, endDate) {
+	db.run(`DELETE FROM Classes WHERE date BETWEEN ? AND ?`, [startDate, endDate], (err) => {
+		if (err) {
+			if (debug) {
+				console.log(err.message)
+			}
+			return
+		}
+	})
 }
 
 async function addHoliday(name, startDate, endDate) {
@@ -1030,7 +1039,7 @@ function removeDuplicatesBy(keyFn, array) {
 function getClassesByGroupAndDateRange(groupId, startDate, endDate) {
 	return new Promise((resolve, reject) => {
 		const sql = `
-			SELECT c.id, s.name AS subject, s.id as subjectID, t.name AS teacher, r.name AS room, c.start_time as startTime, c.end_time as endTime, c.date, g.name AS groupName, c.group_names as groupIDS, c.info, c.state
+			SELECT c.id, s.name AS subject, c.lesson_id as subjectID, t.name AS teacher, r.name AS room, c.start_time as startTime, c.end_time as endTime, c.date, g.name AS groupName, c.group_names as groupIDS, c.info, c.state
 			FROM Classes c
 			JOIN Subjects s ON c.subject_id = s.id
 			JOIN Teachers t ON c.teacher_id = t.id
@@ -1063,7 +1072,7 @@ function getClassesByGroupAndDateRange(groupId, startDate, endDate) {
 function getClassesByTeacherAndDateRange(teacherId, startDate, endDate) {
 	return new Promise((resolve, reject) => {
 		const sql = `
-      		SELECT c.id, s.name AS subject, s.id as subjectID, t.name AS teacher, r.name AS room, c.start_time as startTime, c.end_time as endTime, c.date, g.name AS groupName, c.group_names as groupIDS, c.info, c.state
+      		SELECT c.id, s.name AS subject, c.lesson_id as subjectID, t.name AS teacher, r.name AS room, c.start_time as startTime, c.end_time as endTime, c.date, g.name AS groupName, c.group_names as groupIDS, c.info, c.state
 			FROM Classes c
 			JOIN Subjects s ON c.subject_id = s.id
 			JOIN Teachers t ON c.teacher_id = t.id
@@ -1097,7 +1106,7 @@ function getClassesByTeacherAndDateRange(teacherId, startDate, endDate) {
 function getClassesByRoomAndDateRange(roomId, startDate, endDate) {
 	return new Promise((resolve, reject) => {
 		const sql = `
-      		SELECT c.id, s.name AS subject, s.id as subjectID, t.name AS teacher, r.name AS room, c.start_time as startTime, c.end_time as endTime, c.date, g.name AS groupName, c.group_names as groupIDS, c.info, c.state
+      		SELECT c.id, s.name AS subject, c.lesson_id as subjectID, t.name AS teacher, r.name AS room, c.start_time as startTime, c.end_time as endTime, c.date, g.name AS groupName, c.group_names as groupIDS, c.info, c.state
 			FROM Classes c
 			JOIN Subjects s ON c.subject_id = s.id
 			JOIN Teachers t ON c.teacher_id = t.id
@@ -1198,4 +1207,4 @@ async function addHolidaysToDB() {
 	await submitCommit()
 }
 
-module.exports = { beginCommit, submitCommit, getRoomsTeachersGroups, addClass, addTeacher, addGroup, addRoom, addSubject, getClassesByGroupAndDateRange, getClassesByTeacherAndDateRange, getClassesByRoomAndDateRange, getGroups, getHolidaysByDate }
+module.exports = { beginCommit, submitCommit, removeStartEndDate, getRoomsTeachersGroups, addClass, addTeacher, addGroup, addRoom, addSubject, getClassesByGroupAndDateRange, getClassesByTeacherAndDateRange, getClassesByRoomAndDateRange, getGroups, getHolidaysByDate }

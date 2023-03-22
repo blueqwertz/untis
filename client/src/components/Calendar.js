@@ -3,13 +3,14 @@ import axios from "../api/axios"
 import { MoonLoader } from "react-spinners"
 import Class from "./Class"
 
-function Calendar({ dataOptions, setDataOptions, editMode }) {
+function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	const [searchData, setSearchData] = useState({})
 	const [isLoading, setIsLoading] = useState(true)
 	const [data, setDataContent] = useState({})
 	const [holidays, setHolidays] = useState({})
 	const [lastFetch, setLastFetch] = useState(undefined)
 	const [hidden, setHidden] = useState(localStorage.getItem("hidden") ? JSON.parse(localStorage.getItem("hidden")) : {})
+	const [errMsg, setErrMsg] = useState("")
 
 	Date.prototype.formatLastFetch = function () {
 		let now = new Date()
@@ -25,6 +26,10 @@ function Calendar({ dataOptions, setDataOptions, editMode }) {
 			return `${day}.${month} ${hours}:${minutes}`
 		}
 	}
+
+	useEffect(() => {
+		localStorage.setItem("hidden", JSON.stringify(hidden))
+	}, [hidden])
 
 	useEffect(() => {
 		const getData = async (doSetLoading) => {
@@ -121,16 +126,18 @@ function Calendar({ dataOptions, setDataOptions, editMode }) {
 			localStorage.setItem("dataOptions", JSON.stringify(dataOptions))
 
 			if (doSetLoading) {
-				await setIsLoading(true)
+				setIsLoading(true)
 			}
 			try {
 				const response = await axios.get(`/data/${dataOptions.type}/${dataOptions.id}?date="${new Date(dataOptions.date).toISOString().slice(0, 10)}"`)
 				const result = await formatData(response.data.classes, response.data.holidays)
+				setErrMsg("")
 				await setDataContent(result)
 				await localStorage.setItem("data", JSON.stringify({ lastFetch: new Date(), data: result }))
 				setIsLoading(false)
 				setLastFetch(new Date())
 			} catch (err) {
+				setErrMsg("Server wurde nicht erreicht.")
 				if (localStorage.getItem("data")) {
 					const data = await JSON.parse(localStorage.getItem("data"))
 					const result = data.data
@@ -139,9 +146,11 @@ function Calendar({ dataOptions, setDataOptions, editMode }) {
 					setLastFetch(new Date(lastFetch))
 					setIsLoading(false)
 				}
+				setTimeout(() => {
+					getData(false)
+				}, 5000)
 			}
 		}
-
 		getData(true)
 	}, [dataOptions])
 
@@ -171,6 +180,9 @@ function Calendar({ dataOptions, setDataOptions, editMode }) {
 				])
 			} catch {
 				console.log("Could not fetch data")
+				setTimeout(() => {
+					getData()
+				}, 5000)
 			}
 		}
 		getData()
@@ -183,9 +195,10 @@ function Calendar({ dataOptions, setDataOptions, editMode }) {
 		const month = Math.floor((dateInt % 10000) / 100)
 		const day = dateInt % 100
 		const date = new Date(year, month - 1, day)
+		date.setHours(12)
 		const weekday = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"][date.getDay()]
 
-		return { weekday, date: (day < 10 ? "0" + day : day) + "." + (month < 10 ? "0" + month : month) }
+		return { weekday, date: (day < 10 ? "0" + day : day) + "." + (month < 10 ? "0" + month : month), dateObj: date }
 	}
 
 	return isLoading ? (
@@ -197,7 +210,7 @@ function Calendar({ dataOptions, setDataOptions, editMode }) {
 	) : (
 		<>
 			<div className="flex grow">
-				<div className="mt-[56px] sm:mt-[36px] flex flex-col px-1 text-xs sm:text-sm sm:px-2 pb-8 text-gray-400 dark:text-slate-500">
+				<div className="mt-[46px] sm:mt-[36px] flex flex-col px-1 text-xs sm:text-sm sm:px-2 pb-8 text-gray-400 dark:text-slate-500">
 					<div className="grow flex justify-center items-center">1</div>
 					<div className="grow flex justify-center items-center">2</div>
 					<div className="grow flex justify-center items-center">3</div>
@@ -214,16 +227,16 @@ function Calendar({ dataOptions, setDataOptions, editMode }) {
 					{Object.keys(data).map((day, index) => {
 						const formDate = formatDate(day)
 						return (
-							<div key={day} className={`flex-1 grid grid-rows-[56px_repeat(10,1fr)] sm:grid-rows-[36px_repeat(10,1fr)] gap-[1px] ${dayView !== undefined && dayView !== index ? "hidden" : ""}`}>
+							<div key={day} className={`flex-1 grid grid-rows-[46px_repeat(10,1fr)] sm:grid-rows-[36px_repeat(10,1fr)] gap-[1px] ${dayView !== undefined && dayView !== index ? "hidden" : ""}`}>
 								<div
-									className="w-full py-1 flex flex-col sm:flex-row sm:gap-3 justify-center items-center text-sm md:text-base cursor-pointer select-none"
+									className={`w-full py-1 flex flex-col sm:flex-row sm:gap-3 justify-center items-center text-xs md:text-sm cursor-pointer select-none ${formDate.dateObj.toISOString().slice(0, 10) == new Date().toISOString().slice(0, 10) ? "bg-[#bcc0c4] dark:bg-slate-600" : ""}`}
 									onClick={async () => {
 										await setDayView(dayView != undefined ? undefined : index)
 										document.body.setAttribute("data-day-view", dayView == undefined)
 									}}
 								>
 									<div className="font-semibold">{formDate.weekday}</div>
-									<div>{formDate.date}</div>
+									<div className="font-light">{formDate.date}</div>
 								</div>
 								{/* HOUR */}
 								{data[day].type == "holiday" ? (
@@ -235,9 +248,15 @@ function Calendar({ dataOptions, setDataOptions, editMode }) {
 										return (
 											<div key={hour} data-hour className="flex-1 flex gap-[1px] bg-slate-300 dark:bg-slate-800 text-gray-900">
 												{/* CLASS */}
-												{Object.keys(data[day][hour]).map((hourclass) => {
-													return <Class key={data[day][hour][hourclass].id} hour={data[day][hour][hourclass]} hide={hidden[dataOptions.id]?.includes(data[day][hour][hourclass].subjectID)} />
-												})}
+												{Object.keys(data[day][hour])
+													.sort((a, b) => {
+														const aHidden = hidden[dataOptions.id]?.includes(data[day][hour][a].subjectID)
+														const bHidden = hidden[dataOptions.id]?.includes(data[day][hour][b].subjectID)
+														return aHidden - bHidden
+													})
+													.map((hourclass) => {
+														return <Class key={data[day][hour][hourclass].id} curHour={data[day][hour][hourclass]} classHidden={hidden[dataOptions.id]?.includes(data[day][hour][hourclass].subjectID)} editMode={editMode} setHidden={setHidden} dataOptions={dataOptions} />
+													})}
 											</div>
 										)
 									})
@@ -247,12 +266,13 @@ function Calendar({ dataOptions, setDataOptions, editMode }) {
 					})}
 				</div>
 			</div>
-			<div className="fixed left-0 bottom-0 mx-4 my-2 text-gray-500 text-xs cursor-pointer select-none">
+			<div className="fixed left-1/2 bottom-0 px-4 py-2 text-gray-500 text-xs cursor-pointer select-none -translate-x-1/2 flex justify-between w-full box-border">
 				<a className="mr-2" href="https://bgpd.at" target={"_blank"}>
 					©bgpd.at
 				</a>
+				<span>{errMsg}</span>
+				<span>Aktualisiert {lastFetch.formatLastFetch()}</span>
 			</div>
-			<div className="fixed right-0 bottom-0 mx-4 my-2 text-gray-500 text-xs cursor-pointer select-none">Aktualisiert {lastFetch.formatLastFetch()}</div>
 		</>
 	)
 }
