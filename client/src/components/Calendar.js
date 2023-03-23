@@ -4,11 +4,12 @@ import { MoonLoader } from "react-spinners"
 import Class from "./Class"
 
 function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
-	const [searchData, setSearchData] = useState({})
+	const [searchData, setSearchData] = useState([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [data, setDataContent] = useState({})
 	const [holidays, setHolidays] = useState({})
 	const [lastFetch, setLastFetch] = useState(undefined)
+	const [fetchInterval, setFetchInterval] = useState(undefined)
 	const [hidden, setHidden] = useState(localStorage.getItem("hidden") ? JSON.parse(localStorage.getItem("hidden")) : {})
 	const [errMsg, setErrMsg] = useState("")
 	const [focus, setFocus] = useState(0)
@@ -52,25 +53,44 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 				return result
 			}
 
+			function compareToNextClass(a, b) {
+				if (!b) {
+					return false
+				}
+				if (!(a.length == b.length)) {
+					return false
+				}
+				for (let el of a) {
+					const next = b.find((el2) => el2.subjectID == el.subjectID)
+					if (!next) {
+						return false
+					}
+					if (!(el.room == next.room && el.teacher == next.teacher && el.group == next.group)) {
+						return false
+					}
+				}
+				return true
+			}
+
 			async function formatData(events, holidays) {
 				let timeLookUpTable = {
 					755: 0,
 					850: 1,
-					955: 2,
-					1050: 3,
-					1145: 4,
-					1240: 5,
-					1330: 5,
-					1400: 6,
-					1450: 7,
-					1550: 8,
-					1640: 9,
+					955: 3,
+					1050: 4,
+					1145: 5,
+					1240: 6,
+					1330: 7,
+					1400: 8,
+					1450: 9,
+					1550: 10,
+					1640: 11,
 				}
 				const grid = {}
 				const weekDates = getWeekDates(new Date(dataOptions.date))
 				weekDates.forEach((key) => {
 					if (!grid[key]) {
-						grid[key] = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] }
+						grid[key] = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [], 13: [] }
 					}
 				})
 				events.forEach((event) => {
@@ -78,7 +98,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 						const date = event.date.replaceAll("-", "")
 						const hour = timeLookUpTable[event.startTime]
 						if (!grid[date]) {
-							grid[date] = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] }
+							grid[date] = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [], 13: [] }
 						}
 						if (!grid[date][hour]) {
 							grid[date][hour] = new Array(10)
@@ -97,6 +117,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 							info: event.info,
 							groupIDS: event.groupIDS,
 							subjectID: event.subjectID,
+							doubleClass: false,
 						})
 					} catch (err) {
 						console.log(err)
@@ -124,6 +145,18 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 						console.log(err)
 					}
 				})
+				// for (let date in grid) {
+				// 	for (let hour in grid[date]) {
+				// 		const doubleClass = compareToNextClass(grid[date][hour], grid[date][parseInt(hour) + 1])
+				// 		if (doubleClass) {
+				// 			for (let hourclass in grid[date][hour]) {
+				// 				grid[date][hour][hourclass].doubleClass = true
+				// 				grid[date][parseInt(hour) + 1] = []
+				// 			}
+				// 		}
+				// 		console.log(doubleClass)
+				// 	}
+				// }
 				return grid
 			}
 
@@ -142,6 +175,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 				setLastFetch(new Date())
 			} catch (err) {
 				setErrMsg("Server wurde nicht erreicht.")
+				localStorage.removeItem("dataOptions")
 				if (localStorage.getItem("data")) {
 					const data = await JSON.parse(localStorage.getItem("data"))
 					const result = data.data
@@ -214,13 +248,16 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	) : (
 		<>
 			<div className="flex grow">
-				<div className="mt-[46px] sm:mt-[36px] flex flex-col px-1 text-xs sm:text-sm sm:px-2 pb-8 text-gray-400 dark:text-slate-500">
+				<div className="grid grid-rows-[46px_repeat(2,1fr)_18px_repeat(4,1fr)_36px_repeat(4,1fr) sm:grid-rows-[36px_repeat(2,1fr)_18px_repeat(4,1fr)_36px_repeat(4,1fr)] px-1 text-xs sm:text-sm sm:px-2 pb-8 text-gray-400 dark:text-slate-500">
+					<div className="grow flex justify-center items-center"></div>
 					<div className="grow flex justify-center items-center">1</div>
 					<div className="grow flex justify-center items-center">2</div>
+					<div className="grow flex justify-center items-center"></div>
 					<div className="grow flex justify-center items-center">3</div>
 					<div className="grow flex justify-center items-center">4</div>
 					<div className="grow flex justify-center items-center">5</div>
 					<div className="grow flex justify-center items-center">6</div>
+					<div className="grow flex justify-center items-center"></div>
 					<div className="grow flex justify-center items-center">7</div>
 					<div className="grow flex justify-center items-center">8</div>
 					<div className="grow flex justify-center items-center">9</div>
@@ -231,7 +268,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 					{Object.keys(data).map((day, index) => {
 						const formDate = formatDate(day)
 						return (
-							<div key={day} className={`flex-1 grid grid-rows-[46px_repeat(10,1fr)] sm:grid-rows-[36px_repeat(10,1fr)] gap-[1px] ${dayView !== undefined && dayView !== index ? "hidden" : ""}`}>
+							<div key={day} className={`flex-1 grid grid-rows-[46px_repeat(2,1fr)_18px_repeat(4,1fr)_36px_repeat(4,1fr)] sm:grid-rows-[36px_repeat(2,1fr)_18px_repeat(4,1fr)_36px_repeat(4,1fr)] gap-[1px] ${dayView !== undefined && dayView !== index ? "hidden" : ""}`}>
 								<div
 									className={`w-full py-1 flex flex-col sm:flex-row sm:gap-3 justify-center items-center text-xs md:text-sm cursor-pointer select-none ${formDate.dateObj.toISOString().slice(0, 10) == new Date().toISOString().slice(0, 10) ? "bg-[#bcc0c4] dark:bg-slate-600" : ""}`}
 									onClick={async () => {
@@ -244,13 +281,13 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 								</div>
 								{/* HOUR */}
 								{data[day].type == "holiday" ? (
-									<div className="flex-1 row-start-2 row-end-[12] bg-gray-400 dark:bg-slate-700 flex justify-center items-center overflow-hidden">
+									<div className="flex-1 row-start-2 row-end-[14] bg-gray-400 dark:bg-slate-700 flex justify-center items-center overflow-hidden">
 										<div className="-rotate-90">{data[day].name}</div>
 									</div>
 								) : (
 									Object.keys(data[day]).map((hour) => {
 										return (
-											<div key={hour} data-hour className="flex-1 flex gap-[1px] bg-slate-300 dark:bg-slate-800 text-gray-900">
+											<div key={hour} data-hour style={{ gridRow: `${parseInt(hour) + 2} / ${parseInt(hour) + (data[day][hour][0]?.doubleClass ? 4 : 3)}` }} className={`flex-1 flex gap-[1px] bg-slate-300 dark:bg-slate-800 text-gray-900 ${data[day][[parseInt(hour) - 1]] ? (data[day][[parseInt(hour) - 1]][0]?.doubleClass ? "hidden" : "") : ""}`}>
 												{/* CLASS */}
 												{Object.keys(data[day][hour])
 													.sort((a, b) => {
@@ -259,7 +296,22 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 														return aHidden - bHidden
 													})
 													.map((hourclass) => {
-														return <Class key={data[day][hour][hourclass].id} curHour={data[day][hour][hourclass]} classHidden={hidden[dataOptions.id]?.includes(data[day][hour][hourclass].subjectID)} editMode={editMode} setHidden={setHidden} dataOptions={dataOptions} focus={focus} setFocus={setFocus} infoData={searchData} />
+														const classHidden = hidden[dataOptions.id]?.includes(data[day][hour][hourclass].subjectID)
+														return (
+															<Class
+																key={data[day][hour][hourclass].id}
+																curHour={data[day][hour][hourclass]}
+																compareData={{ thisHour: data[day][hour], nextHour: data[day][[parseInt(hour) + 1]] }}
+																classHidden={classHidden}
+																editMode={editMode}
+																setHidden={setHidden}
+																dataOptions={dataOptions}
+																setDataOptions={setDataOptions}
+																focus={focus}
+																setFocus={setFocus}
+																infoData={searchData}
+															/>
+														)
 													})}
 											</div>
 										)

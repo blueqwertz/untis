@@ -3,6 +3,10 @@ import { BiGroup } from "react-icons/bi"
 import { RiDoorClosedLine } from "react-icons/ri"
 
 function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions }) {
+	const [results, setResults] = useState([])
+	const [showOptions, setShowOptions] = useState(false)
+	const [searchInput, setSearch] = useState("")
+
 	useEffect(() => {
 		document.addEventListener("click", (e) => {
 			if (!e.target.closest("#searchbar")) {
@@ -11,9 +15,9 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions }) 
 		})
 	}, [])
 
-	const [results, setResults] = useState([])
-	const [showOptions, setShowOptions] = useState(false)
-	const [searchInput, setSearch] = useState("")
+	useEffect(() => {
+		setSearch(dataOptions.name)
+	}, [dataOptions])
 
 	return (
 		<div className="max-w-[330px] sm:w-80 relative z-10" id="searchbar">
@@ -35,7 +39,6 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions }) 
 					if (e.key === "Enter") {
 						if (results.length > 0) {
 							setShowOptions(false)
-							setSearch(results[0].name)
 							setDataOptions({ ...dataOptions, id: results[0].id, type: { Klasse: "group", Lehrer: "teacher", Raum: "room" }[results[0].type], name: results[0].name })
 						}
 					}
@@ -59,7 +62,6 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions }) 
 								className="bg-gray-200 dark:bg-slate-800 m-[2px] px-3 py-2 flex items-center justify-start gap-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-slate-900 transition-colors"
 								onClick={() => {
 									setShowOptions(false)
-									setSearch(result.name)
 									setDataOptions({ ...dataOptions, id: result.id, type: "teacher", name: result.name })
 								}}
 							>
@@ -82,7 +84,6 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions }) 
 								className="bg-gray-200 dark:bg-slate-800 m-[2px] px-3 py-2 flex items-center justify-start gap-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-slate-900 transition-colors"
 								onClick={() => {
 									setShowOptions(false)
-									setSearch(result.name)
 									setDataOptions({ ...dataOptions, id: result.id, type: result.type == "Klasse" ? "group" : "room", name: result.name })
 								}}
 							>
