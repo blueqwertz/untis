@@ -127,7 +127,7 @@ class Webuntis {
 		await this.fetch_groups()
 		const groups = await this.db.getGroups()
 		for (let group of groups) {
-			console.log(group)
+			console.log(`ID: ${group.id} NAME: ${group.name} DATE: ${date}`)
 			const result = await this.fetch_group_id(group.id, date)
 		}
 	}

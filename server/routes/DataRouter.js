@@ -26,9 +26,6 @@ router.post("/group/:id", async (req, res) => {
 	}
 	let startDate = getMonday(new Date(date))
 	let endDate = getFriday(new Date(date))
-	// await wu.db.beginCommit()
-	// await wu.fetch_group_id(id, startDate)
-	// await wu.db.submitCommit()
 	const holidays = await db.getHolidaysByDate(startDate, endDate)
 	const classes = await db.getClassesByGroupAndDateRange(id, startDate, endDate)
 	res.send({ classes, holidays })
