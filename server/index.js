@@ -9,7 +9,7 @@ const db = require("./utils/Database")
 const Webuntis = require("./utils/WebUntis")
 const webuntis = new Webuntis(db)
 
-webuntis.fetch_week(0)
+webuntis.auto_fetcher(0)
 
 const app = express()
 const PORT = 3001

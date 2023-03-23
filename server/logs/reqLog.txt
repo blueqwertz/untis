@@ -10762,3 +10762,11 @@
 20230323	20:34:06	913fd4ed-c5bc-4d4f-8ea9-0ffc7b2291e8	POST	http://localhost:3001	/api/data/group/1810
 20230323	20:45:20	7ba442a2-5f4e-4af8-bf9c-636731c4f744	POST	http://10.0.0.51:3001	/api/data/group/1810
 20230323	20:45:20	1835f8ad-454f-4b93-b12b-67e90f84a5d0	POST	http://10.0.0.51:3001	/api/data/list
+20230323	22:45:13	133f5b54-0f16-4858-957d-700bd24f5042	GET	undefined	/
+20230323	22:45:13	b65743bc-2aff-41e9-a4b5-91b14faff2f1	GET	undefined	/static/css/main.07590e3c.css
+20230323	22:45:13	a620703a-c412-4330-b918-ef0fcaee6315	GET	undefined	/static/js/main.0b51f10d.js
+20230323	22:45:13	89f0a662-6822-42a2-bbaf-7ec99242bd70	POST	http://localhost:3001	/api/data/list
+20230323	22:45:13	5138c5b2-eb14-49b3-84ff-cca655502289	POST	http://localhost:3001	/api/data/group/1810
+20230323	22:45:13	8d65ebaf-d627-44e4-8343-60a85a31e435	POST	http://localhost:3001	/api/data/list
+20230323	22:45:27	3af8a501-3c7e-49c8-a94a-b0209b34ec7b	POST	http://localhost:3001	/api/data/group/1805
+20230323	22:45:28	f4133d92-7825-4ff2-a9ef-1f2c7a135a9c	POST	http://localhost:3001	/api/data/group/1815

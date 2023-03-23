@@ -21,7 +21,6 @@ function getFriday(d) {
 router.post("/group/:id", async (req, res) => {
 	const id = req?.params?.id
 	var { date } = req?.body
-	console.log(id, date)
 	if (!date) {
 		date = new Date()
 	}
