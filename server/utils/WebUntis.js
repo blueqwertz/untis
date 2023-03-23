@@ -136,7 +136,7 @@ class Webuntis {
 		await this.db.beginCommit()
 		const currentDate = new Date()
 		const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + x * 7)
-		await this.db.removeStartEndDate(this.getMonday(targetDate), this.getFriday(targetDate))
+		// await this.db.removeStartEndDate(this.getMonday(targetDate), this.getFriday(targetDate))
 		const formattedDate = targetDate.toISOString().slice(0, 10)
 		await this.fetch_all(formattedDate)
 		await this.db.submitCommit()
