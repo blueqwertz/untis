@@ -127,7 +127,7 @@ class Webuntis {
 		await this.fetch_groups()
 		const groups = await this.db.getGroups()
 		for (let group of groups) {
-			console.log(`ID: ${group.id} NAME: ${group.name} DATE: ${date}`)
+			console.log(`ID: ${group.id} / NAME: ${group.name} / DATE: ${date}`)
 			const result = await this.fetch_group_id(group.id, date)
 		}
 	}
@@ -149,7 +149,7 @@ class Webuntis {
 			for (let i = 0; i <= range; i++) {
 				if ((index - (Math.pow(2, i) - 1)) % Math.pow(2, i + 1) == 0) {
 					fetched = true
-					console.log("STARTING FETCH", i)
+					// console.log("STARTING FETCH", i)
 					try {
 						await this.fetch_week(i)
 					} catch (err) {
