@@ -39,7 +39,7 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions }) 
 					if (e.key === "Enter") {
 						if (results.length > 0) {
 							setShowOptions(false)
-							setDataOptions({ ...dataOptions, id: results[0].id, type: { Klasse: "group", Lehrer: "teacher", Raum: "room" }[results[0].type], name: results[0].name })
+							setDataOptions({ ...dataOptions, id: results[0].id, type: { Klasse: "group", Lehrer: "teacher", Raum: "room" }[results[0].type], name: results[0].name, before: {} })
 						}
 					}
 				}}
