@@ -164,7 +164,7 @@ class Webuntis {
 			index += 1
 			setTimeout(() => {
 				fetcher()
-			}, 30 * 1000)
+			}, 5 * 1000)
 		}
 		fetcher()
 	}
