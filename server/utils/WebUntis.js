@@ -126,14 +126,21 @@ class Webuntis {
 	async fetch_all(date) {
 		await this.fetch_groups()
 		const all_groups = await this.db.getGroups()
-		await Promise.all(
-			all_groups.map(async (group) => {
-				await this.fetch_group_id(group.id, date)
-			})
-		)
+		// await Promise.all(
+		// 	all_groups.map(async (group, index) => {
+		// 		console.log(group)
+		// 		const result = await this.fetch_group_id(group.id, date)
+		// 	})
+		// )
+		for (let i = 0; i < all_groups.length; i++) {
+			const group = all_groups[i]
+			console.log(group)
+			const result = await this.fetch_group_id(group.id, date)
+		}
 	}
 
 	async fetch_week(x) {
+		console.log("start")
 		await this.db.beginCommit()
 		const currentDate = new Date()
 		const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + x * 7)
@@ -141,6 +148,7 @@ class Webuntis {
 		const formattedDate = targetDate.toISOString().slice(0, 10)
 		await this.fetch_all(formattedDate)
 		await this.db.submitCommit()
+		console.log("done")
 	}
 
 	auto_fetcher(range) {
