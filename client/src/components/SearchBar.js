@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { BiGroup } from "react-icons/bi"
+import { BiGroup, BiSearch } from "react-icons/bi"
 import { RiDoorClosedLine } from "react-icons/ri"
 
 function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions }) {
@@ -24,7 +24,7 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions }) 
 			<input
 				type="text"
 				placeholder="Lehrer, Klasse, Raum"
-				className="text-md font-medium shrink px-3 py-2 rounded-none outline-none bg-gray-200 border-2 border-gray-400 dark:bg-slate-800 dark:border-slate-500 w-full"
+				className="text-md font-medium shrink px-3 pr-7 cursor-text py-2 rounded-none outline-none bg-gray-200 border-2 border-gray-400 dark:bg-slate-800 dark:border-slate-500 w-full"
 				onInput={(e) => {
 					e.preventDefault()
 					setSearch(e.target.value)
@@ -53,6 +53,7 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions }) 
 				value={searchInput}
 				autoFocus={true}
 			/>
+			<BiSearch className="absolute top-1/2 -translate-y-1/2 right-2 w-5 h-5 text-gray-500 dark:text-slate-400" />
 			<div className={`absolute mt-1 top-full right-0 w-full min-w-min bg-gray-400 dark:bg-slate-500 origin-top-right transition-all ${(results.length > 0) & showOptions ? "" : "scale-90 opacity-0 pointer-events-none"}`}>
 				{results.map((result, index) => {
 					if (result.type == "Lehrer") {
@@ -62,7 +63,7 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions }) 
 								className="bg-gray-200 dark:bg-slate-800 m-[2px] px-3 py-2 flex items-center justify-start gap-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-slate-900 transition-colors"
 								onClick={() => {
 									setShowOptions(false)
-									setDataOptions({ ...dataOptions, id: result.id, type: "teacher", name: result.name })
+									setDataOptions({ ...dataOptions, id: result.id, type: "teacher", name: result.name, before: {} })
 								}}
 							>
 								<img className="flex grow w-8" src={result.link} />
@@ -84,7 +85,7 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions }) 
 								className="bg-gray-200 dark:bg-slate-800 m-[2px] px-3 py-2 flex items-center justify-start gap-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-slate-900 transition-colors"
 								onClick={() => {
 									setShowOptions(false)
-									setDataOptions({ ...dataOptions, id: result.id, type: result.type == "Klasse" ? "group" : "room", name: result.name })
+									setDataOptions({ ...dataOptions, id: result.id, type: result.type == "Klasse" ? "group" : "room", name: result.name, before: {} })
 								}}
 							>
 								<div className="flex grow p-2 justify-center items-center rounded-full bg-gray-400 dark:bg-slate-700 text-gray-800 dark:text-gray-50">{result.type == "Klasse" ? <BiGroup /> : <RiDoorClosedLine />}</div>

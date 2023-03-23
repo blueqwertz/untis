@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import axios from "../api/axios"
 import { MoonLoader } from "react-spinners"
+import { RiArrowLeftLine } from "react-icons/ri"
 import Class from "./Class"
 
 function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
@@ -9,7 +10,6 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	const [data, setDataContent] = useState({})
 	const [holidays, setHolidays] = useState({})
 	const [lastFetch, setLastFetch] = useState(undefined)
-	const [fetchInterval, setFetchInterval] = useState(undefined)
 	const [hidden, setHidden] = useState(localStorage.getItem("hidden") ? JSON.parse(localStorage.getItem("hidden")) : {})
 	const [errMsg, setErrMsg] = useState("")
 	const [focus, setFocus] = useState(0)
@@ -29,171 +29,172 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 		}
 	}
 
+	const getCalendarData = async (doSetLoading) => {
+		function getWeekDates(date) {
+			const result = []
+			const day = date.getDay()
+			const diff = date.getDate() - day + (day === 0 ? -6 : 1)
+			const startOfWeek = new Date(date.setDate(diff))
+			for (let i = 0; i < 5; i++) {
+				const currentDate = new Date(startOfWeek)
+				currentDate.setDate(startOfWeek.getDate() + i)
+				const year = currentDate.getFullYear()
+				const month = currentDate.getMonth() + 1
+				const day = currentDate.getDate()
+				const formattedMonth = month.toString().padStart(2, "0")
+				const formattedDay = day.toString().padStart(2, "0")
+				result.push(`${year}${formattedMonth}${formattedDay}`)
+			}
+			return result
+		}
+
+		function compareToNextClass(a, b) {
+			if (!b) {
+				return false
+			}
+			if (!(a.length == b.length)) {
+				return false
+			}
+			for (let el of a) {
+				const next = b.find((el2) => el2.subjectID == el.subjectID)
+				if (!next) {
+					return false
+				}
+				if (!(el.room == next.room && el.teacher == next.teacher && el.group == next.group)) {
+					return false
+				}
+			}
+			return true
+		}
+
+		async function formatData(events, holidays) {
+			let timeLookUpTable = {
+				755: 0,
+				850: 1,
+				955: 3,
+				1050: 4,
+				1145: 5,
+				1240: 6,
+				1330: 7,
+				1400: 8,
+				1450: 9,
+				1550: 10,
+				1640: 11,
+			}
+			const grid = {}
+			const weekDates = getWeekDates(new Date(dataOptions.date))
+			weekDates.forEach((key) => {
+				if (!grid[key]) {
+					grid[key] = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [], 13: [] }
+				}
+			})
+			events.forEach((event) => {
+				try {
+					const date = event.date.replaceAll("-", "")
+					const hour = timeLookUpTable[event.startTime]
+					if (!grid[date]) {
+						grid[date] = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [], 13: [] }
+					}
+					if (!grid[date][hour]) {
+						grid[date][hour] = new Array(10)
+					}
+					grid[date][hour].push({
+						status: event.state,
+						date: date,
+						hour: hour,
+						start: event.startTime,
+						end: event.endTime,
+						teacher: event.teacher,
+						room: event.room,
+						subject: event.subject,
+						group: event.groupName,
+						id: event.id,
+						info: event.info,
+						groupIDS: event.groupIDS,
+						subjectID: event.subjectID,
+						doubleClass: false,
+					})
+				} catch (err) {
+					console.log(err)
+				}
+			})
+			weekDates.forEach((day) => {
+				try {
+					const year = day.toString().slice(0, 4)
+					const month = parseInt(day.toString().slice(4, 6)) - 1
+					const weekday = day.toString().slice(6, 8)
+
+					const date = new Date(year, month, weekday)
+					date.setHours(12)
+
+					holidays.forEach((holiday) => {
+						if (new Date(holiday.startDate).getTime() < date.getTime() && new Date(new Date(holiday.endDate).setHours(13)).getTime() > date.getTime()) {
+							holiday = {
+								...holiday,
+								type: "holiday",
+							}
+							grid[day] = holiday
+						}
+					})
+				} catch (err) {
+					console.log(err)
+				}
+			})
+			// for (let date in grid) {
+			// 	for (let hour in grid[date]) {
+			// 		const doubleClass = compareToNextClass(grid[date][hour], grid[date][parseInt(hour) + 1])
+			// 		if (doubleClass) {
+			// 			for (let hourclass in grid[date][hour]) {
+			// 				grid[date][hour][hourclass].doubleClass = true
+			// 				grid[date][parseInt(hour) + 1] = []
+			// 			}
+			// 		}
+			// 		console.log(doubleClass)
+			// 	}
+			// }
+			return grid
+		}
+
+		localStorage.setItem("dataOptions", JSON.stringify(dataOptions))
+
+		if (doSetLoading) {
+			setIsLoading(true)
+		}
+		try {
+			const response = await axios.post(`/data/${dataOptions.type}/${dataOptions.id}`, { date: new Date(dataOptions.date).toISOString().slice(0, 10) })
+			const result = await formatData(response.data.classes, response.data.holidays)
+			setErrMsg("")
+			await setDataContent(result)
+			await localStorage.setItem("data", JSON.stringify({ lastFetch: new Date(), data: result }))
+			setIsLoading(false)
+			setLastFetch(new Date())
+		} catch (err) {
+			setErrMsg("Server wurde nicht erreicht.")
+			localStorage.removeItem("dataOptions")
+			if (localStorage.getItem("data")) {
+				const data = await JSON.parse(localStorage.getItem("data"))
+				const result = data.data
+				const lastFetch = data.lastFetch
+				await setDataContent(result)
+				setLastFetch(new Date(lastFetch))
+				setIsLoading(false)
+			}
+			setTimeout(() => {
+				getCalendarData(false)
+			}, 5000)
+		}
+	}
+
 	useEffect(() => {
 		localStorage.setItem("hidden", JSON.stringify(hidden))
 	}, [hidden])
 
 	useEffect(() => {
-		const getData = async (doSetLoading) => {
-			function getWeekDates(date) {
-				const result = []
-				const day = date.getDay()
-				const diff = date.getDate() - day + (day === 0 ? -6 : 1)
-				const startOfWeek = new Date(date.setDate(diff))
-				for (let i = 0; i < 5; i++) {
-					const currentDate = new Date(startOfWeek)
-					currentDate.setDate(startOfWeek.getDate() + i)
-					const year = currentDate.getFullYear()
-					const month = currentDate.getMonth() + 1
-					const day = currentDate.getDate()
-					const formattedMonth = month.toString().padStart(2, "0")
-					const formattedDay = day.toString().padStart(2, "0")
-					result.push(`${year}${formattedMonth}${formattedDay}`)
-				}
-				return result
-			}
-
-			function compareToNextClass(a, b) {
-				if (!b) {
-					return false
-				}
-				if (!(a.length == b.length)) {
-					return false
-				}
-				for (let el of a) {
-					const next = b.find((el2) => el2.subjectID == el.subjectID)
-					if (!next) {
-						return false
-					}
-					if (!(el.room == next.room && el.teacher == next.teacher && el.group == next.group)) {
-						return false
-					}
-				}
-				return true
-			}
-
-			async function formatData(events, holidays) {
-				let timeLookUpTable = {
-					755: 0,
-					850: 1,
-					955: 3,
-					1050: 4,
-					1145: 5,
-					1240: 6,
-					1330: 7,
-					1400: 8,
-					1450: 9,
-					1550: 10,
-					1640: 11,
-				}
-				const grid = {}
-				const weekDates = getWeekDates(new Date(dataOptions.date))
-				weekDates.forEach((key) => {
-					if (!grid[key]) {
-						grid[key] = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [], 13: [] }
-					}
-				})
-				events.forEach((event) => {
-					try {
-						const date = event.date.replaceAll("-", "")
-						const hour = timeLookUpTable[event.startTime]
-						if (!grid[date]) {
-							grid[date] = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], 11: [], 12: [], 13: [] }
-						}
-						if (!grid[date][hour]) {
-							grid[date][hour] = new Array(10)
-						}
-						grid[date][hour].push({
-							status: event.state,
-							date: date,
-							hour: hour,
-							start: event.startTime,
-							end: event.endTime,
-							teacher: event.teacher,
-							room: event.room,
-							subject: event.subject,
-							group: event.groupName,
-							id: event.id,
-							info: event.info,
-							groupIDS: event.groupIDS,
-							subjectID: event.subjectID,
-							doubleClass: false,
-						})
-					} catch (err) {
-						console.log(err)
-					}
-				})
-				weekDates.forEach((day) => {
-					try {
-						const year = day.toString().slice(0, 4)
-						const month = parseInt(day.toString().slice(4, 6)) - 1
-						const weekday = day.toString().slice(6, 8)
-
-						const date = new Date(year, month, weekday)
-						date.setHours(12)
-
-						holidays.forEach((holiday) => {
-							if (new Date(holiday.startDate).getTime() < date.getTime() && new Date(new Date(holiday.endDate).setHours(13)).getTime() > date.getTime()) {
-								holiday = {
-									...holiday,
-									type: "holiday",
-								}
-								grid[day] = holiday
-							}
-						})
-					} catch (err) {
-						console.log(err)
-					}
-				})
-				// for (let date in grid) {
-				// 	for (let hour in grid[date]) {
-				// 		const doubleClass = compareToNextClass(grid[date][hour], grid[date][parseInt(hour) + 1])
-				// 		if (doubleClass) {
-				// 			for (let hourclass in grid[date][hour]) {
-				// 				grid[date][hour][hourclass].doubleClass = true
-				// 				grid[date][parseInt(hour) + 1] = []
-				// 			}
-				// 		}
-				// 		console.log(doubleClass)
-				// 	}
-				// }
-				return grid
-			}
-
-			localStorage.setItem("dataOptions", JSON.stringify(dataOptions))
-
-			if (doSetLoading) {
-				setIsLoading(true)
-			}
-			try {
-				const response = await axios.post(`/data/${dataOptions.type}/${dataOptions.id}`, { date: new Date(dataOptions.date).toISOString().slice(0, 10) })
-				const result = await formatData(response.data.classes, response.data.holidays)
-				setErrMsg("")
-				await setDataContent(result)
-				await localStorage.setItem("data", JSON.stringify({ lastFetch: new Date(), data: result }))
-				setIsLoading(false)
-				setLastFetch(new Date())
-			} catch (err) {
-				setErrMsg("Server wurde nicht erreicht.")
-				localStorage.removeItem("dataOptions")
-				if (localStorage.getItem("data")) {
-					const data = await JSON.parse(localStorage.getItem("data"))
-					const result = data.data
-					const lastFetch = data.lastFetch
-					await setDataContent(result)
-					setLastFetch(new Date(lastFetch))
-					setIsLoading(false)
-				}
-				setTimeout(() => {
-					getData(false)
-				}, 5000)
-			}
-		}
-		getData(true)
+		getCalendarData(true)
 	}, [dataOptions])
 
 	useEffect(() => {
-		const getData = async () => {
+		const getListData = async () => {
 			try {
 				const response = await axios.post("/data/list")
 				setSearchData([
@@ -219,11 +220,11 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 			} catch {
 				console.log("Could not fetch data")
 				setTimeout(() => {
-					getData()
+					getListData()
 				}, 5000)
 			}
 		}
-		getData()
+		getListData()
 	}, [])
 
 	const [dayView, setDayView] = useState(undefined)
@@ -287,7 +288,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 								) : (
 									Object.keys(data[day]).map((hour) => {
 										return (
-											<div key={hour} data-hour style={{ gridRow: `${parseInt(hour) + 2} / ${parseInt(hour) + (data[day][hour][0]?.doubleClass ? 4 : 3)}` }} className={`flex-1 flex gap-[1px] bg-slate-300 dark:bg-slate-800 text-gray-900 ${data[day][[parseInt(hour) - 1]] ? (data[day][[parseInt(hour) - 1]][0]?.doubleClass ? "hidden" : "") : ""}`}>
+											<div key={hour} data-hour className={`flex-1 flex gap-[1px] bg-slate-300 dark:bg-slate-800 text-gray-900`}>
 												{/* CLASS */}
 												{Object.keys(data[day][hour])
 													.sort((a, b) => {
@@ -322,6 +323,19 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 					})}
 				</div>
 			</div>
+			{dataOptions.before && Object.keys(dataOptions.before) != 0 ? (
+				<div
+					className="w-11 h-11 fixed left-7 sm:left-10 bottom-10 opacity-70 hover:opacity-100 flex flex-col items-center justify-center bg-gray-400 dark:bg-slate-700 border-2 dark:border-slate-500 rounded-full cursor-pointer hover:scale-110 active:scale-100 transition-[transform_opacity] text-gray-50 dark:text-slate-200"
+					onClick={() => {
+						setDataOptions(dataOptions.before)
+					}}
+				>
+					<RiArrowLeftLine />
+					<span className="text-[10px]">{dataOptions.before.name}</span>
+				</div>
+			) : (
+				<></>
+			)}
 			<div className="fixed left-1/2 bottom-0 px-4 py-2 text-gray-500 text-xs cursor-pointer select-none -translate-x-1/2 flex justify-between w-full box-border">
 				<a className="mr-2" href="https://bgpd.at" target={"_blank"}>
 					©bgpd.at

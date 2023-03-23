@@ -77,7 +77,7 @@ function Class({ curHour, compareData, classHidden, editMode, setHidden, dataOpt
 					</div>
 					<div className="flex flex-col items-center h-full justify-around">
 						<div className="font-semibold">{curHour.room}</div>
-						<div className="whitespace-nowrap overflow-hidden text-ellipsis font-light">{curHour.group}</div>
+						<div className="font-light">{curHour.group}</div>
 					</div>
 					{curHour.info ? (
 						<div className="absolute top-0 right-0 my-[1px] mx-[2px]">
@@ -101,9 +101,22 @@ function Class({ curHour, compareData, classHidden, editMode, setHidden, dataOpt
 						<></>
 					)}
 					<div className={`rounded-md cursor-default absolute drop-shadow-xl py-3 px-5 bg-gray-100 dark:bg-slate-600 border border-gray-500 dark:border-slate-300 dark:text-gray-50 m-2 z-[9] transition-all text-start text-sm ${focus == curHour.id ? "opacity-100 scale-100" : "opacity-0 pointer-events-none scale-50"}`} style={{ [direction.dir]: [direction.value] }}>
-						<div className="relative flex gap-2 text-base sm:text-lg">
+						<div className="relative flex justify-between gap-2 text-base sm:text-lg">
 							<span className="font-semibold whitespace-nowrap">{curHour.subject}</span>
-							<span className="font-normal text-gray-400 whitespace-nowrap">{curHour.room}</span>
+							<span
+								className="font-normal text-gray-500 dark:text-slate-300 whitespace-nowrap hover:underline cursor-pointer"
+								onClick={() => {
+									const roomObj = infoData.find((el) => el.name == curHour.room)
+									if (!roomObj) {
+										return
+									}
+									setDataOptions((prev) => {
+										return { ...prev, type: "room", id: roomObj.id, name: roomObj.name, before: prev }
+									})
+								}}
+							>
+								{curHour.room}
+							</span>
 						</div>
 						<div className="flex gap-2 italic text-gray-500 dark:text-slate-300">
 							<span>
@@ -121,7 +134,7 @@ function Class({ curHour, compareData, classHidden, editMode, setHidden, dataOpt
 									return
 								}
 								setDataOptions((prev) => {
-									return { ...prev, type: "teacher", id: teacherObj.id, name: teacherObj.name }
+									return { ...prev, type: "teacher", id: teacherObj.id, name: teacherObj.name, before: prev }
 								})
 							}}
 						>
