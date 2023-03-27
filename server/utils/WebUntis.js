@@ -113,7 +113,7 @@ class Webuntis {
 						const day = dateInt % 100
 						return `${year}-${makeFull(month)}-${makeFull(day)}`
 					}
-					await this.db.addClass(hour.id, hour_info.subject, hour.lessonId, hour_info.teacher, hour_info.room, hour.startTime, hour.endTime, hour_info.groups, hour_info.groups.join(","), formatDate(hour.date), hour.cellState, hour.lessonText)
+					await this.db.addClass(hour.id, hour_info.subject, hour.lessonId, hour_info.teacher, hour_info.room, hour.startTime, hour.endTime, hour_info.groups, hour_info.groups.join(","), formatDate(hour.date), hour.cellState, hour.periodText)
 				}
 			} else {
 				console.log(`No response ${id}`)
@@ -146,6 +146,7 @@ class Webuntis {
 		var index = 0
 		const fetcher = async () => {
 			let fetched = false
+			index = index % 10000
 			for (let i = 0; i <= range; i++) {
 				if ((index - (Math.pow(2, i) - 1)) % Math.pow(2, i + 1) == 0) {
 					fetched = true
@@ -164,7 +165,7 @@ class Webuntis {
 			index += 1
 			setTimeout(() => {
 				fetcher()
-			}, 15 * 1000)
+			}, 5 * 1000)
 		}
 		fetcher()
 	}

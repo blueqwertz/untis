@@ -7,6 +7,7 @@ function App() {
 	const loadDataOptions = () => {
 		const result = JSON.parse(localStorage.getItem("dataOptions"))
 		result.before = {}
+		result.date = new Date().toISOString().slice(0, 10)
 		return result
 	}
 	const [dataOptions, setDataOptions] = useState(localStorage.getItem("dataOptions") ? loadDataOptions() : { id: 1810, type: "group", name: "8BD", date: new Date().toISOString().slice(0, 10), before: {} })
