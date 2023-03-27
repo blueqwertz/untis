@@ -44,7 +44,7 @@ function Class({ curHour, compareData, classHidden, editMode, setHidden, dataOpt
 						}
 					}
 					const rect = await container.current.getBoundingClientRect()
-					if (document.body.getAttribute("data-day-view") == "true") {
+					if (document.body.getAttribute("data-day-view") == "true" || curHour.info.length > 15) {
 						if (rect.y / document.body.clientHeight > 0.5) {
 							setDirection((prev) => {
 								return { ...prev, dir: "bottom" }
