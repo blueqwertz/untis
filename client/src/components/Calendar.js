@@ -9,12 +9,10 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	const [isLoading, setIsLoading] = useState(true)
 	const [data, setDataContent] = useState({})
 	const [lastFetch, setLastFetch] = useState(undefined)
-	const [fetchIndex, setFetchIndex] = useState(0)
+	const [fetchNotifier, setFetchNotifier] = useState(Math.random())
 	const [hidden, setHidden] = useState(localStorage.getItem("hidden") ? JSON.parse(localStorage.getItem("hidden")) : {})
 	const [errMsg, setErrMsg] = useState("")
 	const [focus, setFocus] = useState(0)
-
-	const FETCHINTERVAL = 10 * 1000
 
 	Date.prototype.formatLastFetch = function () {
 		let now = new Date()
@@ -223,14 +221,9 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	}
 
 	useEffect(() => {
-		setInterval(() => {
-			setFetchIndex(1 - fetchIndex)
-		}, FETCHINTERVAL)
-	}, [])
-
-	useEffect(() => {
+		console.log(`FETCHING ${new Date(dataOptions.date).toISOString().slice(0, 10)}`)
 		getCalendarData(false)
-	}, [fetchIndex])
+	}, [fetchNotifier])
 
 	useEffect(() => {
 		localStorage.setItem("hidden", JSON.stringify(hidden))
@@ -239,6 +232,12 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	useEffect(() => {
 		getCalendarData(true)
 	}, [dataOptions])
+
+	useEffect(() => {
+		setInterval(() => {
+			setFetchNotifier(Math.random())
+		}, 10 * 1000)
+	}, [])
 
 	useEffect(() => {
 		getListData()
@@ -268,54 +267,54 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 			<div className="flex grow">
 				<div className="grid grid-rows-[46px_repeat(2,1fr)_18px_repeat(4,1fr)_36px_repeat(4,1fr)] sm:grid-rows-[36px_repeat(2,1fr)_18px_repeat(4,1fr)_36px_repeat(4,1fr)] px-1 text-xs sm:text-sm sm:px-2 pb-8 text-gray-400 dark:text-slate-500">
 					<div className="flex justify-center items-center"></div>
-					<div className="flex flex-col justify-center items-center">
+					<div className="flex flex-col justify-evenly items-center">
 						<span className="text-xxxs leading-none">7:55</span>
 						<span className="text-gray-700 dark:text-slate-300">1</span>
 						<span className="text-xxxs leading-none">8:45</span>
 					</div>
-					<div className="flex flex-col justify-center items-center">
+					<div className="flex flex-col justify-evenly items-center">
 						<span className="text-xxxs leading-none">8:50</span>
 						<span className="text-gray-700 dark:text-slate-300">2</span>
 						<span className="text-xxxs leading-none">9:40</span>
 					</div>
-					<div className="flex flex-col justify-center items-center"></div>
-					<div className="flex flex-col justify-center items-center">
+					<div className="flex flex-col justify-evenly items-center"></div>
+					<div className="flex flex-col justify-evenly items-center">
 						<span className="text-xxxs leading-none">9:55</span>
 						<span className="text-gray-700 dark:text-slate-300">3</span>
 						<span className="text-xxxs leading-none">10:45</span>
 					</div>
-					<div className="flex flex-col justify-center items-center">
+					<div className="flex flex-col justify-evenly items-center">
 						<span className="text-xxxs leading-none">10:50</span>
 						<span className="text-gray-700 dark:text-slate-300">4</span>
 						<span className="text-xxxs leading-none">11:40</span>
 					</div>
-					<div className="flex flex-col justify-center items-center">
+					<div className="flex flex-col justify-evenly items-center">
 						<span className="text-xxxs leading-none">11:45</span>
 						<span className="text-gray-700 dark:text-slate-300">5</span>
 						<span className="text-xxxs leading-none">12:35</span>
 					</div>
-					<div className="flex flex-col justify-center items-center">
+					<div className="flex flex-col justify-evenly items-center">
 						<span className="text-xxxs leading-none">12:40</span>
 						<span className="text-gray-700 dark:text-slate-300">6</span>
 						<span className="text-xxxs leading-none">13:30</span>
 					</div>
-					<div className="flex flex-col justify-center items-center"></div>
-					<div className="flex flex-col justify-center items-center">
+					<div className="flex flex-col justify-evenly items-center"></div>
+					<div className="flex flex-col justify-evenly items-center">
 						<span className="text-xxxs leading-none">14:00</span>
 						<span className="text-gray-700 dark:text-slate-300">7</span>
 						<span className="text-xxxs leading-none">14:50</span>
 					</div>
-					<div className="flex flex-col justify-center items-center">
+					<div className="flex flex-col justify-evenly items-center">
 						<span className="text-xxxs leading-none">14:50</span>
 						<span className="text-gray-700 dark:text-slate-300">8</span>
 						<span className="text-xxxs leading-none">15:40</span>
 					</div>
-					<div className="flex flex-col justify-center items-center">
+					<div className="flex flex-col justify-evenly items-center">
 						<span className="text-xxxs leading-none">15:50</span>
 						<span className="text-gray-700 dark:text-slate-300">9</span>
 						<span className="text-xxxs leading-none">16:40</span>
 					</div>
-					<div className="flex flex-col justify-center items-center">
+					<div className="flex flex-col justify-evenly items-center">
 						<span className="text-xxxs leading-none">16:40</span>
 						<span className="text-gray-700 dark:text-slate-300">10</span>
 						<span className="text-xxxs leading-none">17:30</span>
