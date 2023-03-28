@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react"
 import { BiGroup, BiSearch } from "react-icons/bi"
-import { RiDoorClosedLine } from "react-icons/ri"
+import { RiDoorClosedLine, RiStarLine, RiStarFill } from "react-icons/ri"
 
-function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions }) {
+function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions, searchStared, setSearchStared }) {
 	const [results, setResults] = useState([])
 	const [showOptions, setShowOptions] = useState(false)
 	const [searchInput, setSearch] = useState("")
@@ -18,6 +18,10 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions }) 
 	useEffect(() => {
 		setSearch(dataOptions.name)
 	}, [dataOptions])
+
+	useEffect(() => {
+		localStorage.setItem("searchStar", JSON.stringify(searchStared))
+	}, [searchStared])
 
 	return (
 		<div className="max-w-[330px] sm:w-80 relative z-10" id="searchbar">
@@ -54,13 +58,13 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions }) 
 				autoFocus={true}
 			/>
 			<BiSearch className="absolute top-1/2 -translate-y-1/2 right-2 w-5 h-5 text-gray-500 dark:text-slate-400" />
-			<div className={`absolute mt-1 top-full right-0 w-full min-w-min bg-gray-400 dark:bg-slate-500 origin-top-right transition-all ${(results.length > 0) & showOptions ? "" : "scale-90 opacity-0 pointer-events-none"}`}>
+			<div className={`absolute mt-1 top-full right-0 w-full min-w-[230px] bg-gray-400 dark:bg-slate-500 origin-top-right transition-all ${(results.length > 0) & showOptions ? "" : "scale-90 opacity-0 pointer-events-none"}`}>
 				{results.map((result, index) => {
 					if (result.type == "Lehrer") {
 						return (
 							<div
 								key={index}
-								className="bg-gray-200 dark:bg-slate-800 m-[2px] px-3 py-2 flex items-center justify-start gap-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-slate-900 transition-colors"
+								className="bg-gray-200 dark:bg-slate-800 m-[2px] pl-3 pr-1 py-2 flex items-center justify-start gap-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-slate-900 transition-colors"
 								onClick={() => {
 									setShowOptions(false)
 									setDataOptions({ ...dataOptions, id: result.id, type: "teacher", name: result.name, before: {} })
@@ -75,17 +79,19 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions }) 
 									</div>
 									<div className="text-sm font-light text-gray-500 dark:text-slate-300 leading-tight">{result.type}</div>
 								</div>
-								<div className="font-light text-sm ml-auto shrink">[{result.name}]</div>
+								{/* <div className="font-light text-lg ml-auto shrink text-gray-400 dark:text-slate-500 p-3">
+									<RiStarLine />
+								</div> */}
 							</div>
 						)
 					} else {
 						return (
 							<div
 								key={index}
-								className="bg-gray-200 dark:bg-slate-800 m-[2px] px-3 py-2 flex items-center justify-start gap-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-slate-900 transition-colors"
-								onClick={() => {
-									setShowOptions(false)
+								className="bg-gray-200 dark:bg-slate-800 m-[2px] pl-3 pr-1 py-2 flex items-center justify-start gap-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-slate-900 transition-colors"
+								onClick={(e) => {
 									setDataOptions({ ...dataOptions, id: result.id, type: result.type == "Klasse" ? "group" : "room", name: result.name, before: {} })
+									setShowOptions(false)
 								}}
 							>
 								<div className="flex grow p-2 justify-center items-center rounded-full bg-gray-400 dark:bg-slate-700 text-gray-800 dark:text-gray-50">{result.type == "Klasse" ? <BiGroup /> : <RiDoorClosedLine />}</div>
@@ -95,6 +101,20 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions }) 
 									</div>
 									<div className="text-sm font-light text-gray-500 dark:text-slate-300 leading-tight">{result.type}</div>
 								</div>
+								{/* <div
+									className="font-light text-lg ml-auto shrink text-gray-400 dark:text-slate-500 p-3 hover:"
+									onClick={(e) => {
+										setSearchStared((prev) => {
+											if (prev.includes(result.id)) {
+												return prev.filter((id) => id !== result.id)
+											} else {
+												return [...prev, result.id]
+											}
+										})
+									}}
+								>
+									{searchStared.includes(result.id) ? <RiStarFill /> : <RiStarLine />}
+								</div> */}
 							</div>
 						)
 					}

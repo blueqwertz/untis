@@ -19,7 +19,11 @@ function DatePicker({ showDatePicker, dataOptions, setDataOptions }) {
 	}
 
 	return (
-		<div className={`font-medium absolute top-full right-1/2 px-3 py-2 pb-1 mt-3 sm:mt-2 z-[11] bg-gray-200 border-2 border-gray-400 dark:bg-slate-800 dark:border-slate-500 flex flex-col gap-1 items-center origin-top transition-all translate-x-1/2 sm:right-0 sm:translate-x-0 ${showDatePicker ? "" : "opacity-0 scale-90 pointer-events-none"} select-none`}>
+		<div
+			className={`font-medium absolute md:relative top-full right-1/2 px-3 py-2 pb-1 mt-3 md:mt-0 z-[11] bg-gray-200 border-2 border-gray-400 dark:bg-slate-800 dark:border-slate-500 md:bg-transparent md:border-none flex flex-col md:flex-row-reverse gap-1 md:gap-2 items-center origin-top transition-all translate-x-1/2 sm:right-0 sm:translate-x-0 ${
+				showDatePicker ? "" : "opacity-0 scale-90 pointer-events-none md:opacity-100 md:scale-100 md:pointer-events-auto"
+			} select-none`}
+		>
 			<div className="flex gap-2 items-center justify-center">
 				<div
 					className="hover:cursor-pointer"
@@ -48,7 +52,7 @@ function DatePicker({ showDatePicker, dataOptions, setDataOptions }) {
 				</div>
 			</div>
 			<div
-				className="cursor-pointer border-2 rounded px-2 border-gray-400 text-gray-800 hover:border-gray-600 dark:border-slate-700 dark:text-gray-50 dark:hover:border-slate-500 transition-colors"
+				className="cursor-pointer border-2 rounded px-2 border-gray-400 text-gray-800 hover:border-gray-600 dark:border-slate-700 dark:text-gray-50 dark:hover:border-slate-500 transition-colors md:dark:border-slate-400"
 				onClick={() => {
 					if (dataOptions.date != new Date().toISOString().slice(0, 10)) {
 						setDataOptions({ ...dataOptions, date: new Date().toISOString().slice(0, 10) })

@@ -45,7 +45,7 @@ function Class({ curHour, compareData, classHidden, editMode, setHidden, dataOpt
 					}
 					const rect = await container.current.getBoundingClientRect()
 					if (document.body.getAttribute("data-day-view") == "true" || curHour.info.length > 15) {
-						if (rect.y / document.body.clientHeight > 0.5) {
+						if (rect.y / document.body.clientHeight > 0.4) {
 							setDirection((prev) => {
 								return { ...prev, dir: "bottom" }
 							})
@@ -70,7 +70,7 @@ function Class({ curHour, compareData, classHidden, editMode, setHidden, dataOpt
 				className={`flex-1 flex justify-center items-center cursor-pointer transition-opacity ${classHidden ? (editMode ? "opacity-60" : "hidden") : ""}`}
 				data-state={curHour.status}
 			>
-				<div className="w-full py-2 h-full text-xs sm:text-sm flex justify-around items-center text-center flex-wrap relative">
+				<div className="min-w-full min-h-full py-2 text-xs sm:text-sm flex justify-around items-center text-center flex-wrap relative">
 					<div className="flex flex-col items-center h-full justify-around">
 						<div className="font-semibold">{curHour.subject}</div>
 						<div className="cursor-pointer relative group font-light">{curHour.teacher}</div>
@@ -100,7 +100,7 @@ function Class({ curHour, compareData, classHidden, editMode, setHidden, dataOpt
 					) : (
 						<></>
 					)}
-					<div className={`rounded-md cursor-default absolute drop-shadow-xl py-3 px-5 bg-gray-100 dark:bg-slate-600 border border-gray-500 dark:border-slate-300 dark:text-gray-50 m-2 z-[9] transition-all text-start text-sm ${focus == curHour.id ? "opacity-100 scale-100" : "opacity-0 pointer-events-none scale-50"}`} style={{ [direction.dir]: [direction.value] }}>
+					<div className={`rounded-md cursor-default absolute drop-shadow-xl py-1 px-3 sm:py-2 sm:px-4 bg-gray-100 dark:bg-slate-600 border border-gray-500 dark:border-slate-300 dark:text-gray-50 m-2 z-[9] transition-all text-start text-sm ${focus == curHour.id ? "opacity-100 scale-100" : "opacity-0 pointer-events-none scale-50"}`} style={{ [direction.dir]: [direction.value] }}>
 						<div className="relative flex justify-between gap-2 text-base sm:text-lg">
 							<span className="font-semibold whitespace-nowrap">{curHour.subject}</span>
 							<span
@@ -146,17 +146,17 @@ function Class({ curHour, compareData, classHidden, editMode, setHidden, dataOpt
 							</span>
 						</div>
 						{curHour.info.length > 0 ? (
-							<div className="flex items-center gap-1">
+							<div className="flex flex-col gap-1 items-start pt-1">
 								<div className="">
-									<MdOutlineEditNote className="w-4 h-4" />
+									<FaInfoCircle className="w-3 h-3" />
 								</div>
-								<span className="">{curHour.info.slice(0, 100)}</span>
+								<span className="line-clamp-3 hover:line-clamp-none">{curHour.info}</span>
 							</div>
 						) : (
 							<></>
 						)}
 						<div
-							className={`absolute transition-all h-[10px] w-[10px] border-gray-500 bg-gray-100 dark:bg-slate-600 dark:border-slate-300 transform rotate-45 ${
+							className={`absolute h-[10px] w-[10px] border-gray-500 bg-gray-100 dark:bg-slate-600 dark:border-slate-300 transform rotate-45 ${
 								{ right: "top-1/2 left-full -translate-y-1/2 -translate-x-[4.5px] border-r border-t", left: "top-1/2 right-full translate-x-[4.5px] -translate-y-1/2 border-l border-b", top: "bottom-full translate-y-[4.5px] -translate-x-1/2 left-1/2 border-l border-t", bottom: "top-full -translate-x-1/2 -translate-y-[4.5px] border-b border-r left-1/2" }[direction.dir]
 							}`}
 						></div>

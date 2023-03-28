@@ -5,7 +5,7 @@ import { searchDictionary } from "../utils/search"
 import axios from "../api/axios"
 import DatePicker from "./DatePicker"
 
-function TopBar({ dataOptions, setDataOptions, editMode, setEditMode }) {
+function TopBar({ dataOptions, setDataOptions, editMode, setEditMode, searchStared, setSearchStared }) {
 	const [teacherData, setTeacherData] = useState({})
 	const [showDatePicker, setShowDatePicker] = useState(false)
 
@@ -61,7 +61,7 @@ function TopBar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 							setShowDatePicker(!showDatePicker)
 						}}
 					>
-						<AiOutlineCalendar className="w-6 h-6 cursor-pointer" />
+						<AiOutlineCalendar className="w-6 h-6 cursor-pointer md:hidden" />
 					</div>
 					<div>
 						<DatePicker showDatePicker={showDatePicker} dataOptions={dataOptions} setDataOptions={setDataOptions} />
@@ -77,7 +77,7 @@ function TopBar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 						}}
 					/>
 				</div>
-				<SearchBar searchFunction={searchDictionary} searchData={teacherData} dataOptions={dataOptions} setDataOptions={setDataOptions} />
+				<SearchBar searchFunction={searchDictionary} searchData={teacherData} dataOptions={dataOptions} setDataOptions={setDataOptions} searchStared={searchStared} setSearchStared={setSearchStared} />
 			</div>
 		</header>
 	)

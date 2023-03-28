@@ -71,6 +71,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 			let timeLookUpTable = {
 				755: 0,
 				850: 1,
+				940: 2,
 				955: 3,
 				1050: 4,
 				1145: 5,
@@ -161,7 +162,9 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 			setIsLoading(true)
 		}
 		try {
-			const response = await axios.post(`/data/${dataOptions.type}/${dataOptions.id}`, { date: new Date(dataOptions.date).toISOString().slice(0, 10) })
+			var date = new Date(dataOptions.date)
+			date.setDate(date.getDate() + 2)
+			const response = await axios.post(`/data/${dataOptions.type}/${dataOptions.id}`, { date: date.toISOString().slice(0, 10) })
 			const result = await formatData(response.data.classes, response.data.holidays)
 			setErrMsg("")
 			await setDataContent(result)
@@ -249,20 +252,60 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	) : (
 		<>
 			<div className="flex grow">
-				<div className="grid grid-rows-[46px_repeat(2,1fr)_18px_repeat(4,1fr)_36px_repeat(4,1fr) sm:grid-rows-[36px_repeat(2,1fr)_18px_repeat(4,1fr)_36px_repeat(4,1fr)] px-1 text-xs sm:text-sm sm:px-2 pb-8 text-gray-400 dark:text-slate-500">
-					<div className="grow flex justify-center items-center"></div>
-					<div className="grow flex justify-center items-center">1</div>
-					<div className="grow flex justify-center items-center">2</div>
-					<div className="grow flex justify-center items-center"></div>
-					<div className="grow flex justify-center items-center">3</div>
-					<div className="grow flex justify-center items-center">4</div>
-					<div className="grow flex justify-center items-center">5</div>
-					<div className="grow flex justify-center items-center">6</div>
-					<div className="grow flex justify-center items-center"></div>
-					<div className="grow flex justify-center items-center">7</div>
-					<div className="grow flex justify-center items-center">8</div>
-					<div className="grow flex justify-center items-center">9</div>
-					<div className="grow flex justify-center items-center">10</div>
+				<div className="grid grid-rows-[46px_repeat(2,1fr)_18px_repeat(4,1fr)_36px_repeat(4,1fr)] sm:grid-rows-[36px_repeat(2,1fr)_18px_repeat(4,1fr)_36px_repeat(4,1fr)] px-1 text-xs sm:text-sm sm:px-2 pb-8 text-gray-400 dark:text-slate-500">
+					<div className="flex justify-center items-center"></div>
+					<div className="flex flex-col justify-center items-center">
+						<span className="text-[10px]">7:55</span>
+						<span className="text-gray-700 dark:text-slate-300">1</span>
+						<span className="text-[10px]">8:45</span>
+					</div>
+					<div className="flex flex-col justify-center items-center">
+						<span className="text-[10px]">8:50</span>
+						<span className="text-gray-700 dark:text-slate-300">2</span>
+						<span className="text-[10px]">9:40</span>
+					</div>
+					<div className="flex flex-col justify-center items-center"></div>
+					<div className="flex flex-col justify-center items-center">
+						<span className="text-[10px]">9:55</span>
+						<span className="text-gray-700 dark:text-slate-300">3</span>
+						<span className="text-[10px]">10:45</span>
+					</div>
+					<div className="flex flex-col justify-center items-center">
+						<span className="text-[10px]">10:50</span>
+						<span className="text-gray-700 dark:text-slate-300">4</span>
+						<span className="text-[10px]">11:40</span>
+					</div>
+					<div className="flex flex-col justify-center items-center">
+						<span className="text-[10px]">11:45</span>
+						<span className="text-gray-700 dark:text-slate-300">5</span>
+						<span className="text-[10px]">12:35</span>
+					</div>
+					<div className="flex flex-col justify-center items-center">
+						<span className="text-[10px]">12:40</span>
+						<span className="text-gray-700 dark:text-slate-300">6</span>
+						<span className="text-[10px]">13:30</span>
+					</div>
+					<div className="flex flex-col justify-center items-center"></div>
+					<div className="flex flex-col justify-center items-center">
+						<span className="text-[10px]">14:00</span>
+						<span className="text-gray-700 dark:text-slate-300">7</span>
+						<span className="text-[10px]">14:50</span>
+					</div>
+					<div className="flex flex-col justify-center items-center">
+						<span className="text-[10px]">14:50</span>
+						<span className="text-gray-700 dark:text-slate-300">8</span>
+						<span className="text-[10px]">15:40</span>
+					</div>
+					<div className="flex flex-col justify-center items-center">
+						<span className="text-[10px]">15:50</span>
+						<span className="text-gray-700 dark:text-slate-300">9</span>
+						<span className="text-[10px]">16:40</span>
+					</div>
+					<div className="flex flex-col justify-center items-center">
+						<span className="text-[10px]">16:40</span>
+						<span className="text-gray-700 dark:text-slate-300">10</span>
+						<span className="text-[10px]">17:30</span>
+					</div>
 				</div>
 				<div className="flex flex-1 gap-[1px] pr-3 pb-8 ">
 					{/* DAY */}
