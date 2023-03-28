@@ -18,7 +18,7 @@ function getFriday(d) {
 	return new Date(d.setDate(diff)).toISOString().slice(0, 10)
 }
 
-router.post("/group/:id", async (req, res) => {
+router.post("/holidays", async (req, res) => {
 	const id = req?.params?.id
 	var { date } = req?.body
 	if (!date) {
@@ -27,8 +27,19 @@ router.post("/group/:id", async (req, res) => {
 	let startDate = getMonday(new Date(date))
 	let endDate = getFriday(new Date(date))
 	const holidays = await db.getHolidaysByDate(startDate, endDate)
+	res.send(holidays)
+})
+
+router.post("/group/:id", async (req, res) => {
+	const id = req?.params?.id
+	var { date } = req?.body
+	if (!date) {
+		date = new Date()
+	}
+	let startDate = getMonday(new Date(date))
+	let endDate = getFriday(new Date(date))
 	const classes = await db.getClassesByGroupAndDateRange(id, startDate, endDate)
-	res.send({ classes, holidays })
+	res.send(classes)
 })
 
 router.post("/teacher/:id", async (req, res) => {
@@ -39,9 +50,8 @@ router.post("/teacher/:id", async (req, res) => {
 	}
 	let startDate = getMonday(new Date(date))
 	let endDate = getFriday(new Date(date))
-	const holidays = await db.getHolidaysByDate(startDate, endDate)
 	const classes = await db.getClassesByTeacherAndDateRange(id, startDate, endDate)
-	res.send({ classes, holidays })
+	res.send(classes)
 })
 
 router.post("/room/:id", async (req, res) => {
@@ -52,9 +62,8 @@ router.post("/room/:id", async (req, res) => {
 	}
 	let startDate = getMonday(new Date(date))
 	let endDate = getFriday(new Date(date))
-	const holidays = await db.getHolidaysByDate(startDate, endDate)
 	const classes = await db.getClassesByRoomAndDateRange(id, startDate, endDate)
-	res.send({ classes, holidays })
+	res.send(classes)
 })
 
 router.post("")

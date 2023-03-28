@@ -8,11 +8,13 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	const [searchData, setSearchData] = useState([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [data, setDataContent] = useState({})
-	const [holidays, setHolidays] = useState({})
 	const [lastFetch, setLastFetch] = useState(undefined)
+	const [fetchIndex, setFetchIndex] = useState(0)
 	const [hidden, setHidden] = useState(localStorage.getItem("hidden") ? JSON.parse(localStorage.getItem("hidden")) : {})
 	const [errMsg, setErrMsg] = useState("")
 	const [focus, setFocus] = useState(0)
+
+	const FETCHINTERVAL = 10 * 1000
 
 	Date.prototype.formatLastFetch = function () {
 		let now = new Date()
@@ -164,8 +166,9 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 		try {
 			var date = new Date(dataOptions.date)
 			date.setDate(date.getDate() + 2)
-			const response = await axios.post(`/data/${dataOptions.type}/${dataOptions.id}`, { date: date.toISOString().slice(0, 10) })
-			const result = await formatData(response.data.classes, response.data.holidays)
+			const classRequest = await axios.post(`/data/${dataOptions.type}/${dataOptions.id}`, { date: date.toISOString().slice(0, 10) })
+			const holidayRequest = await axios.post(`/data/holidays`, { date: date.toISOString().slice(0, 10) })
+			const result = await formatData(classRequest.data, holidayRequest.data)
 			setErrMsg("")
 			await setDataContent(result)
 			await localStorage.setItem("data", JSON.stringify({ lastFetch: new Date(), data: result }))
@@ -188,6 +191,47 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 		}
 	}
 
+	const getListData = async () => {
+		try {
+			const response = await axios.post("/data/list")
+			setSearchData([
+				...response.data.rooms.map((entry) => {
+					return {
+						type: "Raum",
+						...entry,
+					}
+				}),
+				...response.data.teachers.map((entry) => {
+					return {
+						type: "Lehrer",
+						...entry,
+					}
+				}),
+				...response.data.groups.map((entry) => {
+					return {
+						type: "Klasse",
+						...entry,
+					}
+				}),
+			])
+		} catch {
+			console.log("Could not fetch data")
+			setTimeout(() => {
+				getListData()
+			}, 5000)
+		}
+	}
+
+	useEffect(() => {
+		setInterval(() => {
+			setFetchIndex(1 - fetchIndex)
+		}, FETCHINTERVAL)
+	}, [])
+
+	useEffect(() => {
+		getCalendarData(false)
+	}, [fetchIndex])
+
 	useEffect(() => {
 		localStorage.setItem("hidden", JSON.stringify(hidden))
 	}, [hidden])
@@ -197,36 +241,6 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	}, [dataOptions])
 
 	useEffect(() => {
-		const getListData = async () => {
-			try {
-				const response = await axios.post("/data/list")
-				setSearchData([
-					...response.data.rooms.map((entry) => {
-						return {
-							type: "Raum",
-							...entry,
-						}
-					}),
-					...response.data.teachers.map((entry) => {
-						return {
-							type: "Lehrer",
-							...entry,
-						}
-					}),
-					...response.data.groups.map((entry) => {
-						return {
-							type: "Klasse",
-							...entry,
-						}
-					}),
-				])
-			} catch {
-				console.log("Could not fetch data")
-				setTimeout(() => {
-					getListData()
-				}, 5000)
-			}
-		}
 		getListData()
 	}, [])
 
@@ -255,56 +269,56 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 				<div className="grid grid-rows-[46px_repeat(2,1fr)_18px_repeat(4,1fr)_36px_repeat(4,1fr)] sm:grid-rows-[36px_repeat(2,1fr)_18px_repeat(4,1fr)_36px_repeat(4,1fr)] px-1 text-xs sm:text-sm sm:px-2 pb-8 text-gray-400 dark:text-slate-500">
 					<div className="flex justify-center items-center"></div>
 					<div className="flex flex-col justify-center items-center">
-						<span className="text-[10px]">7:55</span>
+						<span className="text-xxxs leading-none">7:55</span>
 						<span className="text-gray-700 dark:text-slate-300">1</span>
-						<span className="text-[10px]">8:45</span>
+						<span className="text-xxxs leading-none">8:45</span>
 					</div>
 					<div className="flex flex-col justify-center items-center">
-						<span className="text-[10px]">8:50</span>
+						<span className="text-xxxs leading-none">8:50</span>
 						<span className="text-gray-700 dark:text-slate-300">2</span>
-						<span className="text-[10px]">9:40</span>
+						<span className="text-xxxs leading-none">9:40</span>
 					</div>
 					<div className="flex flex-col justify-center items-center"></div>
 					<div className="flex flex-col justify-center items-center">
-						<span className="text-[10px]">9:55</span>
+						<span className="text-xxxs leading-none">9:55</span>
 						<span className="text-gray-700 dark:text-slate-300">3</span>
-						<span className="text-[10px]">10:45</span>
+						<span className="text-xxxs leading-none">10:45</span>
 					</div>
 					<div className="flex flex-col justify-center items-center">
-						<span className="text-[10px]">10:50</span>
+						<span className="text-xxxs leading-none">10:50</span>
 						<span className="text-gray-700 dark:text-slate-300">4</span>
-						<span className="text-[10px]">11:40</span>
+						<span className="text-xxxs leading-none">11:40</span>
 					</div>
 					<div className="flex flex-col justify-center items-center">
-						<span className="text-[10px]">11:45</span>
+						<span className="text-xxxs leading-none">11:45</span>
 						<span className="text-gray-700 dark:text-slate-300">5</span>
-						<span className="text-[10px]">12:35</span>
+						<span className="text-xxxs leading-none">12:35</span>
 					</div>
 					<div className="flex flex-col justify-center items-center">
-						<span className="text-[10px]">12:40</span>
+						<span className="text-xxxs leading-none">12:40</span>
 						<span className="text-gray-700 dark:text-slate-300">6</span>
-						<span className="text-[10px]">13:30</span>
+						<span className="text-xxxs leading-none">13:30</span>
 					</div>
 					<div className="flex flex-col justify-center items-center"></div>
 					<div className="flex flex-col justify-center items-center">
-						<span className="text-[10px]">14:00</span>
+						<span className="text-xxxs leading-none">14:00</span>
 						<span className="text-gray-700 dark:text-slate-300">7</span>
-						<span className="text-[10px]">14:50</span>
+						<span className="text-xxxs leading-none">14:50</span>
 					</div>
 					<div className="flex flex-col justify-center items-center">
-						<span className="text-[10px]">14:50</span>
+						<span className="text-xxxs leading-none">14:50</span>
 						<span className="text-gray-700 dark:text-slate-300">8</span>
-						<span className="text-[10px]">15:40</span>
+						<span className="text-xxxs leading-none">15:40</span>
 					</div>
 					<div className="flex flex-col justify-center items-center">
-						<span className="text-[10px]">15:50</span>
+						<span className="text-xxxs leading-none">15:50</span>
 						<span className="text-gray-700 dark:text-slate-300">9</span>
-						<span className="text-[10px]">16:40</span>
+						<span className="text-xxxs leading-none">16:40</span>
 					</div>
 					<div className="flex flex-col justify-center items-center">
-						<span className="text-[10px]">16:40</span>
+						<span className="text-xxxs leading-none">16:40</span>
 						<span className="text-gray-700 dark:text-slate-300">10</span>
-						<span className="text-[10px]">17:30</span>
+						<span className="text-xxxs leading-none">17:30</span>
 					</div>
 				</div>
 				<div className="flex flex-1 gap-[1px] pr-3 pb-8 ">

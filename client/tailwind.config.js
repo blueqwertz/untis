@@ -11,6 +11,10 @@ module.exports = {
 				"timetable-free": "#d8dbe2",
 				"timetable-exam": "#87ceeb",
 			},
+			fontSize: {
+				xxxs: "10px",
+				xxs: "12px",
+			},
 		},
 	},
 	plugins: [require("@tailwindcss/line-clamp")],

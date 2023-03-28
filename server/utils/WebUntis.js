@@ -127,7 +127,7 @@ class Webuntis {
 		await this.fetch_groups()
 		const groups = await this.db.getGroups()
 		for (let group of groups) {
-			console.log(`ID: ${group.id} / NAME: ${group.name} / DATE: ${date}`)
+			// console.log(`ID: ${group.id} / NAME: ${group.name} / DATE: ${date}`)
 			const result = await this.fetch_group_id(group.id, date)
 		}
 	}
@@ -136,6 +136,7 @@ class Webuntis {
 		await this.db.beginCommit()
 		const currentDate = new Date()
 		const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + x * 7)
+		console.log(`FETCHING WEEK: ${targetDate.toISOString().slice(0, 10)} / INDEX ${x}`)
 		// await this.db.removeStartEndDate(this.getMonday(targetDate), this.getFriday(targetDate))
 		const formattedDate = targetDate.toISOString().slice(0, 10)
 		await this.fetch_all(formattedDate)
@@ -150,7 +151,6 @@ class Webuntis {
 			for (let i = 0; i <= range; i++) {
 				if ((index - (Math.pow(2, i) - 1)) % Math.pow(2, i + 1) == 0) {
 					fetched = true
-					// console.log("STARTING FETCH", i)
 					try {
 						await this.fetch_week(i)
 					} catch (err) {
