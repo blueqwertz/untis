@@ -392,8 +392,8 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 			) : (
 				<></>
 			)}
-			<div className="fixed left-1/2 bottom-0 px-4 py-2 text-gray-500 text-xs cursor-pointer select-none -translate-x-1/2 flex justify-between w-full box-border">
-				<a className="mr-2" href="https://bgpd.at" target={"_blank"}>
+			<div className="fixed left-1/2 bottom-0 px-4 py-2 text-gray-500 text-xs cursor-pointer select-none -translate-x-1/2 flex justify-between w-full box-border pointer-events-none">
+				<a className="mr-2 pointer-events-auto" href="https://bgpd.at" target={"_blank"}>
 					©bgpd.at
 				</a>
 				<span>{errMsg}</span>

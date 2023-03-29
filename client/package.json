@@ -27,6 +27,7 @@
 		"web-vitals": "^2.1.4"
 	},
 	"main": "public/main.js",
+	"proxy": "http://localhost:3001",
 	"homepage": "./",
 	"scripts": {
 		"start": "react-scripts start",

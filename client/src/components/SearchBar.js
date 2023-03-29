@@ -6,6 +6,7 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions, se
 	const [results, setResults] = useState([])
 	const [showOptions, setShowOptions] = useState(false)
 	const [searchInput, setSearch] = useState("")
+	const [searchIndex, setSearchIndex] = useState(0)
 
 	useEffect(() => {
 		document.addEventListener("click", (e) => {
@@ -30,21 +31,34 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions, se
 				placeholder="Lehrer, Klasse, Raum"
 				className="text-md font-medium shrink px-3 pr-7 cursor-text py-2 rounded-none outline-none bg-gray-200 border-2 border-gray-400 dark:bg-slate-800 dark:border-slate-500 w-full"
 				onInput={(e) => {
-					e.preventDefault()
 					setSearch(e.target.value)
 					setShowOptions(true)
+					setSearchIndex(0)
 					if (e.target.value.length > 0) {
 						setResults(searchFunction(e.target.value, searchData))
 					} else {
 						setResults([])
 					}
 				}}
-				onKeyUp={(e) => {
+				onKeyDown={(e) => {
 					if (e.key === "Enter") {
-						if (results.length > 0) {
+						if (results.length >= searchIndex) {
 							setShowOptions(false)
-							setDataOptions({ ...dataOptions, id: results[0].id, type: { Klasse: "group", Lehrer: "teacher", Raum: "room" }[results[0].type], name: results[0].name, before: {} })
+							setDataOptions({ ...dataOptions, id: results[searchIndex].id, type: { Klasse: "group", Lehrer: "teacher", Raum: "room" }[results[searchIndex].type], name: results[searchIndex].name, before: {} })
 						}
+					} else if (e.key == "ArrowDown") {
+						e.preventDefault()
+						setSearchIndex((prev) => {
+							return (prev + 1) % results.length
+						})
+					} else if (e.key == "ArrowUp") {
+						e.preventDefault()
+						setSearchIndex((prev) => {
+							if (prev <= 0) {
+								return results.length - 1
+							}
+							return (prev - 1) % results.length
+						})
 					}
 				}}
 				onFocus={(e) => {
@@ -55,7 +69,6 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions, se
 					}
 				}}
 				value={searchInput}
-				autoFocus={true}
 			/>
 			<BiSearch className="absolute top-1/2 -translate-y-1/2 right-2 w-5 h-5 text-gray-500 dark:text-slate-400" />
 			<div className={`absolute mt-1 top-full right-0 w-full min-w-[230px] bg-gray-400 dark:bg-slate-500 origin-top-right transition-all ${(results.length > 0) & showOptions ? "" : "scale-90 opacity-0 pointer-events-none"}`}>
@@ -64,7 +77,7 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions, se
 						return (
 							<div
 								key={index}
-								className="bg-gray-200 dark:bg-slate-800 m-[2px] pl-3 pr-1 py-2 flex items-center justify-start gap-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-slate-900 transition-colors"
+								className={`m-[2px] pl-3 pr-1 py-2 flex items-center justify-start gap-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-slate-900 transition-colors ${index == searchIndex && results.length > 1 ? "bg-slate-300 dark:bg-slate-600" : "bg-gray-200 dark:bg-slate-800"}`}
 								onClick={() => {
 									setShowOptions(false)
 									setDataOptions({ ...dataOptions, id: result.id, type: "teacher", name: result.name, before: {} })
@@ -88,7 +101,7 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions, se
 						return (
 							<div
 								key={index}
-								className="bg-gray-200 dark:bg-slate-800 m-[2px] pl-3 pr-1 py-2 flex items-center justify-start gap-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-slate-900 transition-colors"
+								className={`m-[2px] pl-3 pr-1 py-2 flex items-center justify-start gap-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-slate-900 transition-colors ${index == searchIndex && results.length > 1 ? "bg-slate-300 dark:bg-slate-600" : "bg-gray-200 dark:bg-slate-800"}`}
 								onClick={(e) => {
 									setDataOptions({ ...dataOptions, id: result.id, type: result.type == "Klasse" ? "group" : "room", name: result.name, before: {} })
 									setShowOptions(false)
