@@ -20,7 +20,7 @@ function DatePicker({ showDatePicker, dataOptions, setDataOptions }) {
 
 	return (
 		<div
-			className={`font-medium absolute md:relative top-full right-1/2 px-3 py-2 pb-1 mt-3 md:mt-0 z-[11] bg-gray-200 border-2 border-gray-400 dark:bg-slate-800 dark:border-slate-500 md:bg-transparent md:border-none flex flex-col md:flex-row-reverse gap-1 md:gap-2 items-center origin-top transition-all translate-x-1/2 sm:right-0 sm:translate-x-0 ${
+			className={`font-medium absolute md:relative top-full right-1/2 px-3 py-2 pb-1 md:p-0 mt-3 md:mt-0 z-[11] bg-gray-200 border-2 border-gray-400 dark:bg-slate-800 dark:border-slate-500 md:bg-transparent md:border-none flex flex-col md:flex-row-reverse gap-1 md:gap-3 items-center origin-top transition-all translate-x-1/2 sm:right-0 sm:translate-x-0 ${
 				showDatePicker ? "" : "opacity-0 scale-90 pointer-events-none md:opacity-100 md:scale-100 md:pointer-events-auto"
 			} select-none`}
 		>
