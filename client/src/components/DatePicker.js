@@ -25,7 +25,7 @@ function DatePicker({ showDatePicker, dataOptions, setDataOptions }) {
 				showDatePicker ? "" : "opacity-0 scale-90 pointer-events-none md:opacity-100 md:scale-100 md:pointer-events-auto"
 			} select-none`}
 		>
-			<div className="flex gap-2 items-center justify-center">
+			<div className="flex gap-1 items-center justify-center">
 				<div
 					className="hover:cursor-pointer w-[20px] h-[20px] p-1 box-content rounded-full hover:bg-gray-200 hover:dark:bg-slate-600 transition-colors"
 					onClick={() => {
@@ -53,15 +53,15 @@ function DatePicker({ showDatePicker, dataOptions, setDataOptions }) {
 				</div>
 			</div>
 			<div
-				className="cursor-pointer border-2 rounded-full p-1 w-[20px] h-[20px] lg:w-auto lg:h-auto lg:rounded lg:px-3 box-content border-gray-400 text-gray-800 hover:border-gray-600 dark:border-slate-700 md:dark:border-slate-600 dark:text-gray-50 dark:hover:border-slate-400 transition-colors"
+				className="cursor-pointer border-2 w-auto h-auto rounded px-3 py-1 md:rounded-full md:p-1 md:w-[20px] md:h-[20px] lg:w-auto lg:h-auto lg:rounded lg:px-3 box-content border-gray-400 text-gray-800 hover:border-gray-600 dark:border-slate-700 md:dark:border-slate-600 dark:text-gray-50 dark:hover:border-slate-400 transition-colors"
 				onClick={() => {
 					if (dataOptions.date != new Date().toISOString().slice(0, 10)) {
 						setDataOptions({ ...dataOptions, date: new Date().toISOString().slice(0, 10) })
 					}
 				}}
 			>
-				<span className="hidden lg:block">Heute</span>
-				<MdOutlineUpdate className="w-full h-full lg:hidden" />
+				<span className="md:hidden lg:block">Heute</span>
+				<MdOutlineUpdate className="w-full h-full hidden md:block lg:hidden" />
 			</div>
 		</div>
 	)

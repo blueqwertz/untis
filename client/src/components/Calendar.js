@@ -3,10 +3,12 @@ import axios from "../api/axios"
 import { MoonLoader } from "react-spinners"
 import { RiArrowLeftLine } from "react-icons/ri"
 import Class from "./Class"
+import Loader from "./Loader"
 
 function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	const [searchData, setSearchData] = useState([])
 	const [isLoading, setIsLoading] = useState(true)
+	const [isUpdating, setIsUpdating] = useState(false)
 	const [data, setDataContent] = useState({})
 	const [lastFetch, setLastFetch] = useState(undefined)
 	const [fetchNotifier, setFetchNotifier] = useState(Math.random())
@@ -164,17 +166,20 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 		try {
 			var date = new Date(dataOptions.date)
 			date.setDate(date.getDate() + 2)
-			const classRequest = await axios.post(`/data/${dataOptions.type}/${dataOptions.id}`, { date: date.toISOString().slice(0, 10) })
-			const holidayRequest = await axios.post(`/data/holidays`, { date: date.toISOString().slice(0, 10) })
+
+			const [classRequest, holidayRequest] = await Promise.all([axios.post(`/data/${dataOptions.type}/${dataOptions.id}`, { date: date.toISOString().slice(0, 10) }), axios.post(`/data/holidays`, { date: date.toISOString().slice(0, 10) })])
+
 			const result = await formatData(classRequest.data, holidayRequest.data)
 			setErrMsg("")
 			await setDataContent(result)
 			await localStorage.setItem("data", JSON.stringify({ lastFetch: new Date(), data: result }))
 			setIsLoading(false)
+			setIsUpdating(false)
 			setLastFetch(new Date())
 		} catch (err) {
 			setErrMsg("Server wurde nicht erreicht.")
 			localStorage.removeItem("dataOptions")
+
 			if (localStorage.getItem("data")) {
 				const data = await JSON.parse(localStorage.getItem("data"))
 				const result = data.data
@@ -183,6 +188,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 				setLastFetch(new Date(lastFetch))
 				setIsLoading(false)
 			}
+
 			setTimeout(() => {
 				getCalendarData(false)
 			}, 5000)
@@ -222,6 +228,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 
 	useEffect(() => {
 		console.log(`FETCHING ${new Date(dataOptions.date).toISOString().slice(0, 10)}`)
+		setIsUpdating(true)
 		getCalendarData(false)
 	}, [fetchNotifier])
 
@@ -236,7 +243,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	useEffect(() => {
 		setInterval(() => {
 			setFetchNotifier(Math.random())
-		}, 10 * 1000)
+		}, 15 * 1000)
 	}, [])
 
 	useEffect(() => {
@@ -259,7 +266,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	return isLoading ? (
 		<>
 			<div className="w-full flex items-center justify-center grow">
-				<MoonLoader color="#334155" />
+				<Loader size={14} fill={"fill-gray-800 dark:fill-slate-400"} visible={true} />
 			</div>
 		</>
 	) : (
@@ -381,7 +388,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 			</div>
 			{dataOptions.before && Object.keys(dataOptions.before) != 0 ? (
 				<div
-					className="w-11 h-11 fixed left-7 sm:left-10 bottom-10 opacity-70 hover:opacity-100 flex flex-col items-center justify-center bg-gray-400 dark:bg-slate-700 border-2 dark:border-slate-500 rounded-full cursor-pointer hover:scale-110 active:scale-100 transition-[transform_opacity] text-gray-50 dark:text-slate-200"
+					className="w-11 h-11 fixed left-10 sm:left-12 bottom-10 opacity-70 hover:opacity-100 flex flex-col items-center justify-center bg-gray-400 dark:bg-slate-700 border-2 dark:border-slate-500 rounded-full cursor-pointer hover:scale-110 active:scale-100 transition-[transform_opacity] text-gray-50 dark:text-slate-200"
 					onClick={() => {
 						setDataOptions(dataOptions.before)
 					}}
@@ -397,7 +404,10 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 					©bgpd.at
 				</a>
 				<span>{errMsg}</span>
-				<span>Aktualisiert {lastFetch.formatLastFetch()}</span>
+				<div className="flex items-center justify-center gap-1">
+					<Loader size={3} fill={"fill-gray-800 dark:fill-slate-400"} visible={isUpdating} />
+					<span>Aktualisiert {lastFetch.formatLastFetch()}</span>
+				</div>
 			</div>
 		</>
 	)

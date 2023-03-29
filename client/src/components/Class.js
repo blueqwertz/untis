@@ -51,8 +51,7 @@ function Class({ curHour, compareData, classHidden, editMode, setHidden, dataOpt
 						setDirection((prev) => {
 							return { ...prev, pointPx: Math.round(rect.height / 2) }
 						})
-						console.log(rect.x / document.body.clientWidth > 0.2, rect.x / document.body.clientWidth < 0.8, teacherObj?.lastName.length >= 8)
-						if (rect.x / document.body.clientWidth > 0.2 && rect.x / document.body.clientWidth < 0.8 && teacherObj?.lastName.length >= 8) {
+						if (rect.x / document.body.clientWidth > 0.3 && rect.x / document.body.clientWidth < 0.7 && teacherObj?.lastName.length >= 9) {
 							if (rect.y / document.body.clientHeight > 0.4) {
 								setDirection((prev) => {
 									return { ...prev, dir: "center-top" }
@@ -176,7 +175,7 @@ function Class({ curHour, compareData, classHidden, editMode, setHidden, dataOpt
 							</span>
 						</div>
 						<div
-							className="mt-1 pb-1 flex gap-2 hover:underline cursor-pointer"
+							className="mt-1 pb-1 flex gap-2 hover:underline cursor-pointer group"
 							onClick={() => {
 								if (!teacherObj) {
 									return
@@ -189,14 +188,14 @@ function Class({ curHour, compareData, classHidden, editMode, setHidden, dataOpt
 							<div className="w-6 h-6">
 								<img src={teacherObj?.link || "https://bgperchtoldsdorf.at/wp-content/uploads/2015/11/empty.png"} />
 							</div>
-							<div className="whitespace-nowrap font-light flex items-center gap-[2px] group">
+							<div className="whitespace-nowrap font-light flex items-center gap-[2px]">
 								<div className="overflow-hidden w-3 h-3">
 									<RiLink className="text-xs text-gray-500 dark:text-gray-300 w-full h-full translate-x-full transition-[transform] group-hover:translate-x-0" />
 								</div>
 								<span className="transition-[transform] -translate-x-3 group-hover:translate-x-0">{teacherObj?.lastName || curHour.teacher}</span>
 							</div>
 						</div>
-						<div className="flex flex-wrap">
+						<div className="flex flex-wrap border-t border-gray-400 pt-1 mt-1">
 							{curHour.groupIDS.split(",").map((item, index) => {
 								return (
 									<div
@@ -204,23 +203,22 @@ function Class({ curHour, compareData, classHidden, editMode, setHidden, dataOpt
 										className="pr-1 cursor-pointer hover:underline font-light flex items-center justify-center"
 										onClick={(e) => {
 											setDataOptions((prev) => {
-												console.log("hi")
 												return { ...prev, type: "group", id: item, name: infoData.find((entry) => entry.id == item)?.name, before: prev }
 											})
 										}}
 									>
 										<div className="whitespace-nowrap font-light flex items-center gap-[2px] group">
-											<div className="overflow-hidden w-3 h-3">
-												<RiLink className="text-xs text-gray-500 dark:text-gray-300 w-full h-full translate-x-full transition-[transform] group-hover:translate-x-0" />
-											</div>
-											<span className="transition-[transform] -translate-x-3 group-hover:translate-x-0">{infoData.find((entry) => entry.id == item)?.name || item}</span>
+											<span>
+												{infoData.find((entry) => entry.id == item)?.name || item}
+												{index < curHour.groupIDS.split(",").length - 1 ? "," : ""}
+											</span>
 										</div>
 									</div>
 								)
 							})}
 						</div>
 						{curHour.info.length > 0 ? (
-							<div className="flex flex-col gap-1 items-start pt-1">
+							<div className="flex flex-col gap-1 items-start border-t border-gray-400 mt-1 pt-1">
 								<span className="line-clamp-3 hover:line-clamp-none">{curHour.info}</span>
 							</div>
 						) : (

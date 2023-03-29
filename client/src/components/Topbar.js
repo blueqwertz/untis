@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import SearchBar from "./SearchBar"
 import { AiOutlineEdit, AiOutlineCalendar } from "react-icons/ai"
+import { RiEditLine } from "react-icons/ri"
 import { searchDictionary } from "../utils/search"
 import axios from "../api/axios"
 import DatePicker from "./DatePicker"
@@ -68,7 +69,7 @@ function TopBar({ dataOptions, setDataOptions, editMode, setEditMode, searchStar
 					</div>
 				</div>
 				<div className={`${dataOptions.type === "group" ? "cursor-pointer" : "cursor-not-allowed text-gray-400"}`}>
-					<AiOutlineEdit
+					<RiEditLine
 						className="w-6 h-6"
 						onClick={() => {
 							if (dataOptions.type == "group") {

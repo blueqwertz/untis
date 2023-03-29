@@ -25,7 +25,7 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions, se
 	}, [searchStared])
 
 	return (
-		<div className="max-w-[330px] sm:w-80 relative z-10" id="searchbar">
+		<div className="max-w-[300px] sm:w-80 relative z-10" id="searchbar">
 			<input
 				type="text"
 				placeholder="Lehrer, Klasse, Raum"
