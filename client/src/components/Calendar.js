@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react"
 import axios from "../api/axios"
-import { MoonLoader } from "react-spinners"
-import { RiArrowLeftLine } from "react-icons/ri"
 import Class from "./Class"
 import Loader from "./Loader"
+import SideBar from "./SideBar"
+import BackButton from "./BackButton"
+import WeatherDisplay from "./WeatherDisplay"
 
 function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	const [searchData, setSearchData] = useState([])
@@ -15,6 +16,9 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	const [hidden, setHidden] = useState(localStorage.getItem("hidden") ? JSON.parse(localStorage.getItem("hidden")) : {})
 	const [errMsg, setErrMsg] = useState("")
 	const [focus, setFocus] = useState(0)
+	const [weatherData, setWeatherData] = useState([])
+	const [weatherIcons, setWeatherIcons] = useState([])
+	const weatherCodes = {}
 
 	Date.prototype.formatLastFetch = function () {
 		let now = new Date()
@@ -28,6 +32,34 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 			let hours = this.getHours().toString().padStart(2, "0")
 			let minutes = this.getMinutes().toString().padStart(2, "0")
 			return `${day}.${month} ${hours}:${minutes}`
+		}
+	}
+
+	const fetchWeather = async () => {
+		try {
+			const response = await fetch("https://api.open-meteo.com/v1/forecast?latitude=48.12&longitude=16.27&daily=weathercode,temperature_2m_max&current_weather=true&forecast_days=7&timezone=Europe%2FBerlin")
+			const weatherIcons = await axios.post("/data/weathericons")
+			const data = await response.json()
+			const result = []
+
+			for (let date of data.daily.time) {
+				result.push({ date: date })
+			}
+			for (let index in data.daily.temperature_2m_max) {
+				result[index]["temp_max"] = Math.round(data.daily.temperature_2m_max[index])
+			}
+			for (let index in data.daily.temperature_2m_max) {
+				result[index]["code"] = data.daily.weathercode[index]
+			}
+			result[0] = {
+				date: new Date().toISOString().slice(0, 10),
+				temp_max: Math.round(data["current_weather"]["temperature"]),
+				code: data["current_weather"]["weathercode"],
+			}
+			setWeatherData(result)
+			setWeatherIcons(weatherIcons.data)
+		} catch (err) {
+			return {}
 		}
 	}
 
@@ -244,9 +276,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 		setInterval(() => {
 			setFetchNotifier(Math.random())
 		}, 15 * 1000)
-	}, [])
-
-	useEffect(() => {
+		fetchWeather()
 		getListData()
 	}, [])
 
@@ -272,76 +302,26 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	) : (
 		<>
 			<div className="flex grow">
-				<div className="grid grid-rows-[46px_repeat(2,1fr)_18px_repeat(4,1fr)_36px_repeat(4,1fr)] sm:grid-rows-[36px_repeat(2,1fr)_18px_repeat(4,1fr)_36px_repeat(4,1fr)] px-1 text-xs sm:text-sm sm:px-2 pb-8 text-gray-400 dark:text-slate-500">
-					<div className="flex justify-center items-center"></div>
-					<div className="flex flex-col justify-evenly items-center">
-						<span className="text-xxxs leading-none">7:55</span>
-						<span className="text-gray-700 dark:text-slate-300">1</span>
-						<span className="text-xxxs leading-none">8:45</span>
-					</div>
-					<div className="flex flex-col justify-evenly items-center">
-						<span className="text-xxxs leading-none">8:50</span>
-						<span className="text-gray-700 dark:text-slate-300">2</span>
-						<span className="text-xxxs leading-none">9:40</span>
-					</div>
-					<div className="flex flex-col justify-evenly items-center"></div>
-					<div className="flex flex-col justify-evenly items-center">
-						<span className="text-xxxs leading-none">9:55</span>
-						<span className="text-gray-700 dark:text-slate-300">3</span>
-						<span className="text-xxxs leading-none">10:45</span>
-					</div>
-					<div className="flex flex-col justify-evenly items-center">
-						<span className="text-xxxs leading-none">10:50</span>
-						<span className="text-gray-700 dark:text-slate-300">4</span>
-						<span className="text-xxxs leading-none">11:40</span>
-					</div>
-					<div className="flex flex-col justify-evenly items-center">
-						<span className="text-xxxs leading-none">11:45</span>
-						<span className="text-gray-700 dark:text-slate-300">5</span>
-						<span className="text-xxxs leading-none">12:35</span>
-					</div>
-					<div className="flex flex-col justify-evenly items-center">
-						<span className="text-xxxs leading-none">12:40</span>
-						<span className="text-gray-700 dark:text-slate-300">6</span>
-						<span className="text-xxxs leading-none">13:30</span>
-					</div>
-					<div className="flex flex-col justify-evenly items-center"></div>
-					<div className="flex flex-col justify-evenly items-center">
-						<span className="text-xxxs leading-none">14:00</span>
-						<span className="text-gray-700 dark:text-slate-300">7</span>
-						<span className="text-xxxs leading-none">14:50</span>
-					</div>
-					<div className="flex flex-col justify-evenly items-center">
-						<span className="text-xxxs leading-none">14:50</span>
-						<span className="text-gray-700 dark:text-slate-300">8</span>
-						<span className="text-xxxs leading-none">15:40</span>
-					</div>
-					<div className="flex flex-col justify-evenly items-center">
-						<span className="text-xxxs leading-none">15:50</span>
-						<span className="text-gray-700 dark:text-slate-300">9</span>
-						<span className="text-xxxs leading-none">16:40</span>
-					</div>
-					<div className="flex flex-col justify-evenly items-center">
-						<span className="text-xxxs leading-none">16:40</span>
-						<span className="text-gray-700 dark:text-slate-300">10</span>
-						<span className="text-xxxs leading-none">17:30</span>
-					</div>
-				</div>
+				<SideBar />
 				<div className="flex flex-1 gap-[1px] pr-3 pb-8 ">
 					{/* DAY */}
 					{Object.keys(data).map((day, index) => {
 						const formDate = formatDate(day)
+						const weather = weatherData.find((event) => event.date == formDate.dateObj.toISOString().slice(0, 10))
 						return (
 							<div key={day} className={`flex-1 grid grid-rows-[46px_repeat(2,1fr)_18px_repeat(4,1fr)_36px_repeat(4,1fr)] sm:grid-rows-[36px_repeat(2,1fr)_18px_repeat(4,1fr)_36px_repeat(4,1fr)] gap-[1px] ${dayView !== undefined && dayView !== index ? "hidden" : ""}`}>
 								<div
-									className={`w-full py-1 flex flex-col sm:flex-row sm:gap-3 justify-center items-center text-xs md:text-sm cursor-pointer select-none ${formDate.dateObj.toISOString().slice(0, 10) == new Date().toISOString().slice(0, 10) ? "bg-[#bcc0c4] dark:bg-slate-600" : ""}`}
+									className={`w-full py-1 flex gap-3 justify-center items-center text-xs md:text-sm cursor-pointer select-none @container ${formDate.dateObj.toISOString().slice(0, 10) == new Date().toISOString().slice(0, 10) ? "bg-[#bcc0c4] dark:bg-slate-600" : ""}`}
 									onClick={async () => {
 										await setDayView(dayView != undefined ? undefined : index)
 										document.body.setAttribute("data-day-view", dayView == undefined)
 									}}
 								>
-									<div className="font-semibold">{formDate.weekday}</div>
-									<div className="font-light">{formDate.date}</div>
+									<div className="flex flex-col sm:flex-row items-center justify-around sm:gap-2">
+										<div className="font-semibold">{formDate.weekday}</div>
+										<div className="font-light">{formDate.date}</div>
+									</div>
+									<WeatherDisplay weather={weather} weatherIcons={weatherIcons} />
 								</div>
 								{/* HOUR */}
 								{data[day].type == "holiday" ? (
@@ -386,19 +366,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 					})}
 				</div>
 			</div>
-			{dataOptions.before && Object.keys(dataOptions.before) != 0 ? (
-				<div
-					className="w-11 h-11 fixed left-10 sm:left-12 bottom-10 opacity-70 hover:opacity-100 flex flex-col items-center justify-center bg-gray-400 dark:bg-slate-700 border-2 dark:border-slate-500 rounded-full cursor-pointer hover:scale-110 active:scale-100 transition-[transform_opacity] text-gray-50 dark:text-slate-200"
-					onClick={() => {
-						setDataOptions(dataOptions.before)
-					}}
-				>
-					<RiArrowLeftLine />
-					<span className="text-[10px]">{dataOptions.before.name}</span>
-				</div>
-			) : (
-				<></>
-			)}
+			<BackButton dataOptions={dataOptions} setDataOptions={setDataOptions} />
 			<div className="fixed left-1/2 bottom-0 px-4 py-2 text-gray-500 text-xs cursor-pointer select-none -translate-x-1/2 flex justify-between w-full box-border pointer-events-none">
 				<a className="mr-2 pointer-events-auto" href="https://bgpd.at" target={"_blank"}>
 					©bgpd.at

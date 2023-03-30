@@ -12,10 +12,18 @@ module.exports = {
 				"timetable-exam": "#87ceeb",
 			},
 			fontSize: {
-				xxxs: "10px",
-				xxs: "12px",
+				xxxs: "9px",
+				xxs: "11px",
+			},
+			containers: {
+				"3xs": "7rem",
+				"2xs": "8rem",
+				"1xs": "12rem",
+			},
+			dropShadow: {
+				weather: "0px 0px 7px rgba(0, 0, 0, 0.4)",
 			},
 		},
 	},
-	plugins: [require("@tailwindcss/line-clamp")],
+	plugins: [require("@tailwindcss/container-queries")],
 }

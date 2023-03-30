@@ -6,7 +6,7 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions, se
 	const [results, setResults] = useState([])
 	const [showOptions, setShowOptions] = useState(false)
 	const [searchInput, setSearch] = useState("")
-	const [searchIndex, setSearchIndex] = useState(0)
+	const [searchIndex, setSearchIndex] = useState(-1)
 
 	useEffect(() => {
 		document.addEventListener("click", (e) => {
@@ -33,7 +33,7 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions, se
 				onInput={(e) => {
 					setSearch(e.target.value)
 					setShowOptions(true)
-					setSearchIndex(0)
+					setSearchIndex(-1)
 					if (e.target.value.length > 0) {
 						setResults(searchFunction(e.target.value, searchData))
 					} else {

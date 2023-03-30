@@ -121,7 +121,7 @@ function Class({ curHour, compareData, classHidden, editMode, setHidden, dataOpt
 							onClick={() => {
 								addClassToHidden(dataOptions.id, curHour.subjectID)
 							}}
-							className={`absolute flex justify-center items-center top-0 right-0 text-gray-300 hover:scale-110 active:scale-105 transition-[transform] translate-x-1/3 -translate-y-1/3 z-[9] rounded-full bg-slate-600 p-1 ${editMode ? "scale-100" : "scale-0"}`}
+							className={`absolute flex justify-center items-center top-0 right-0 text-gray-300 hover:scale-110 active:scale-105 transition-[transform] translate-x-1/3 -translate-y-1/3 rounded-full bg-slate-600 z-10 p-1 ${editMode ? "scale-100" : "scale-0"}`}
 						>
 							{classHidden ? <RiEyeOffLine /> : <RiEyeLine />}
 						</div>
@@ -131,8 +131,7 @@ function Class({ curHour, compareData, classHidden, editMode, setHidden, dataOpt
 					{/* TOOLTIP */}
 					<div
 						className={`max-w-[300px] rounded-md cursor-default absolute drop-shadow-xl py-2 px-3 sm:py-2 sm:px-4 
-					bg-gray-100 dark:bg-slate-600 border border-gray-500 dark:border-slate-300 dark:text-gray-50 mx-2
-					 z-[9] transition-all text-start text-sm md:text-base ${focus == curHour.id ? "opacity-100 scale-100" : "opacity-0 pointer-events-none scale-0"} ${
+					bg-gray-100 dark:bg-slate-600 border border-gray-500 dark:border-slate-300 dark:text-gray-50 mx-2 z-10 transition-all text-start text-sm md:text-base ${focus == curHour.id ? "opacity-100 scale-100" : "opacity-0 pointer-events-none scale-0"} ${
 							{
 								"right-top": "left-full bottom-0",
 								"right-bottom": "left-full top-0",
