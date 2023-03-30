@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
 	content: ["./src/**/*.{js,jsx,ts,tsx}"],
-	safelist: ["left-full", "right-full", "bottom-full", "top-full"],
+	safelist: ["left-full", "right-full", "bottom-full", "top-full", "animate-slide-left", "animate-slide-right"],
 	theme: {
 		extend: {
 			colors: {
@@ -22,6 +22,34 @@ module.exports = {
 			},
 			dropShadow: {
 				weather: "0px 0px 7px rgba(0, 0, 0, 0.4)",
+			},
+			keyframes: {
+				"slide-in-left": {
+					"0%": {
+						transform: "translateX(-10%)",
+					},
+					"20%": {
+						transform: "translateX(-10%)",
+					},
+					"100%": {
+						transform: "translateX(0)",
+					},
+				},
+				"slide-in-right": {
+					"0%": {
+						transform: "translateX(10%)",
+					},
+					"20%": {
+						transform: "translateX(10%)",
+					},
+					"100%": {
+						transform: "translateX(0)",
+					},
+				},
+			},
+			animation: {
+				"slide-left": "slide-in-left 0.2s",
+				"slide-right": "slide-in-right 0.2s",
 			},
 		},
 	},

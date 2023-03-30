@@ -18,7 +18,39 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	const [focus, setFocus] = useState(0)
 	const [weatherData, setWeatherData] = useState([])
 	const [weatherIcons, setWeatherIcons] = useState([])
-	const weatherCodes = {}
+
+	const [touchStart, setTouchStart] = useState(null)
+	const [touchEnd, setTouchEnd] = useState(null)
+	const [animationDirection, setAnimationDirection] = useState("")
+
+	const minSwipeDistance = 50
+
+	const onTouchStart = (e) => {
+		setTouchEnd(null)
+		setTouchStart(e.targetTouches[0].clientX)
+	}
+
+	const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX)
+
+	const onTouchEnd = async () => {
+		if (!touchStart || !touchEnd) return
+		const distance = touchStart - touchEnd
+		const isLeftSwipe = distance > minSwipeDistance
+		const isRightSwipe = distance < -minSwipeDistance
+		if (isLeftSwipe) {
+			const newDate = new Date(dataOptions.date)
+			newDate.setHours(12)
+			newDate.setDate(newDate.getDate() + 7)
+			await setDataOptions({ ...dataOptions, date: newDate.toISOString().slice(0, 10) })
+			setAnimationDirection("right")
+		} else if (isRightSwipe) {
+			const newDate = new Date(dataOptions.date)
+			newDate.setHours(12)
+			newDate.setDate(newDate.getDate() - 7)
+			await setDataOptions({ ...dataOptions, date: newDate.toISOString().slice(0, 10) })
+			setAnimationDirection("left")
+		}
+	}
 
 	Date.prototype.formatLastFetch = function () {
 		let now = new Date()
@@ -269,6 +301,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	}, [hidden])
 
 	useEffect(() => {
+		setAnimationDirection("")
 		getCalendarData(true)
 	}, [dataOptions])
 
@@ -301,9 +334,9 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 		</>
 	) : (
 		<>
-			<div className="flex grow">
+			<div className={`flex grow animate-slide-${animationDirection}`}>
 				<SideBar />
-				<div className="flex flex-1 gap-[1px] pr-3 pb-8 ">
+				<div className="flex flex-1 gap-[1px] pr-3 pb-8" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
 					{/* DAY */}
 					{Object.keys(data).map((day, index) => {
 						const formDate = formatDate(day)
