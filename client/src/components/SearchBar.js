@@ -40,11 +40,11 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions, se
 						setResults([])
 					}
 				}}
-				onKeyDown={(e) => {
+				onKeyDown={async (e) => {
 					if (e.key === "Enter") {
 						if (results.length >= searchIndex) {
 							setShowOptions(false)
-							setDataOptions({ ...dataOptions, id: results[searchIndex].id, type: { Klasse: "group", Lehrer: "teacher", Raum: "room" }[results[searchIndex].type], name: results[searchIndex].name, before: {} })
+							setDataOptions({ ...dataOptions, id: results[searchIndex < 0 ? 0 : searchIndex].id, type: { Klasse: "group", Lehrer: "teacher", Raum: "room" }[results[searchIndex < 0 ? 0 : searchIndex].type], name: results[searchIndex < 0 ? 0 : searchIndex].name, before: {} })
 						}
 					} else if (e.key == "ArrowDown") {
 						e.preventDefault()
