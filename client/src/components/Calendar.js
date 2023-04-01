@@ -410,7 +410,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 				<span>{errMsg}</span>
 				<div className="flex items-center justify-center gap-1">
 					<Loader size={3} fill={"fill-gray-800 dark:fill-slate-400"} visible={isUpdating} />
-					<span>Aktualisiert {lastFetch.formatLastFetch()}</span>
+					<span>Aktualisiert {lastFetch?.formatLastFetch()}</span>
 				</div>
 			</div>
 		</>
