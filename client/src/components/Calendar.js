@@ -229,7 +229,6 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 		}
 		try {
 			var date = new Date(dataOptions.date)
-			date.setDate(date.getDate() + 2)
 
 			const [classRequest, holidayRequest] = await Promise.all([axios.post(`/data/${dataOptions.type}/${dataOptions.id}`, { date: date.toISOString().slice(0, 10) }), axios.post(`/data/holidays`, { date: date.toISOString().slice(0, 10) })])
 
