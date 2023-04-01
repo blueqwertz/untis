@@ -325,80 +325,84 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 		return { weekday, date: (day < 10 ? "0" + day : day) + "." + (month < 10 ? "0" + month : month), dateObj: date }
 	}
 
-	return isLoading ? (
+	return (
 		<>
-			<div className="w-full flex items-center justify-center grow">
-				<Loader size={14} fill={"fill-gray-800 dark:fill-slate-400"} visible={true} />
-			</div>
-		</>
-	) : (
-		<>
-			<div className={`flex grow animate-slide-${animationDirection}`}>
-				<SideBar />
-				<div className="flex flex-1 gap-[1px] pr-3 pb-8" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
-					{/* DAY */}
-					{Object.keys(data).map((day, index) => {
-						const formDate = formatDate(day)
-						const weather = weatherData.find((event) => event.date == formDate.dateObj.toISOString().slice(0, 10))
-						return (
-							<div key={day} className={`flex-1 grid grid-rows-[46px_repeat(2,1fr)_18px_repeat(4,1fr)_36px_repeat(4,1fr)] sm:grid-rows-[36px_repeat(2,1fr)_18px_repeat(4,1fr)_36px_repeat(4,1fr)] gap-[1px] ${dayView !== undefined && dayView !== index ? "hidden" : ""}`}>
-								<div
-									className={`w-full py-1 flex gap-3 justify-center items-center text-xs md:text-sm cursor-pointer select-none @container ${formDate.dateObj.toISOString().slice(0, 10) == new Date().toISOString().slice(0, 10) ? "bg-[#bcc0c4] dark:bg-slate-600" : ""}`}
-									onClick={async () => {
-										await setDayView(dayView != undefined ? undefined : index)
-										document.body.setAttribute("data-day-view", dayView == undefined)
-									}}
-								>
-									<div className="flex flex-col sm:flex-row items-center justify-around sm:gap-2">
-										<div className="font-semibold">{formDate.weekday}</div>
-										<div className="font-light">{formDate.date}</div>
-									</div>
-									<WeatherDisplay weather={weather} weatherIcons={weatherIcons} />
-								</div>
-								{/* HOUR */}
-								{data[day].type == "holiday" ? (
-									<div className="flex-1 row-start-2 row-end-[14] bg-gray-400 dark:bg-slate-700 flex justify-center items-center overflow-hidden">
-										<div className="-rotate-90">{data[day].name}</div>
-									</div>
-								) : (
-									Object.keys(data[day]).map((hour) => {
-										return (
-											<div key={hour} data-hour className={`flex-1 flex gap-[1px] bg-slate-300 dark:bg-slate-800 text-gray-900`}>
-												{/* CLASS */}
-												{Object.keys(data[day][hour])
-													.sort((a, b) => {
-														const aHidden = hidden[dataOptions.id]?.includes(data[day][hour][a].subjectID)
-														const bHidden = hidden[dataOptions.id]?.includes(data[day][hour][b].subjectID)
-														return aHidden - bHidden
-													})
-													.map((hourclass) => {
-														const classHidden = hidden[dataOptions.id]?.includes(data[day][hour][hourclass].subjectID)
-														return (
-															<Class
-																key={data[day][hour][hourclass].id}
-																curHour={data[day][hour][hourclass]}
-																compareData={{ thisHour: data[day][hour], nextHour: data[day][[parseInt(hour) + 1]] }}
-																classHidden={classHidden}
-																editMode={editMode}
-																setHidden={setHidden}
-																dataOptions={dataOptions}
-																setDataOptions={setDataOptions}
-																focus={focus}
-																setFocus={setFocus}
-																infoData={searchData}
-															/>
-														)
-													})}
+			{isLoading ? (
+				<>
+					<div className="w-full flex items-center justify-center grow">
+						<Loader size={14} fill={"fill-gray-800 dark:fill-slate-400"} visible={true} />
+					</div>
+				</>
+			) : (
+				<>
+					<div className={`flex grow animate-slide-${animationDirection}`}>
+						<SideBar />
+						<div className="flex flex-1 gap-[1px] pr-3 pb-8" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
+							{/* DAY */}
+							{Object.keys(data).map((day, index) => {
+								const formDate = formatDate(day)
+								const weather = weatherData.find((event) => event.date == formDate.dateObj.toISOString().slice(0, 10))
+								return (
+									<div key={day} className={`flex-1 grid grid-rows-[46px_repeat(2,1fr)_18px_repeat(4,1fr)_36px_repeat(4,1fr)] sm:grid-rows-[36px_repeat(2,1fr)_18px_repeat(4,1fr)_36px_repeat(4,1fr)] gap-[1px] ${dayView !== undefined && dayView !== index ? "hidden" : ""}`}>
+										<div
+											className={`w-full py-1 flex gap-3 justify-center items-center text-xs md:text-sm cursor-pointer select-none @container ${formDate.dateObj.toISOString().slice(0, 10) == new Date().toISOString().slice(0, 10) ? "bg-[#bcc0c4] dark:bg-slate-600" : ""}`}
+											onClick={async () => {
+												await setDayView(dayView != undefined ? undefined : index)
+												document.body.setAttribute("data-day-view", dayView == undefined)
+											}}
+										>
+											<div className="flex flex-col sm:flex-row items-center justify-around sm:gap-2">
+												<div className="font-semibold">{formDate.weekday}</div>
+												<div className="font-light">{formDate.date}</div>
 											</div>
-										)
-									})
-								)}
-							</div>
-						)
-					})}
-				</div>
-			</div>
-			<BackButton dataOptions={dataOptions} setDataOptions={setDataOptions} />
+											<WeatherDisplay weather={weather} weatherIcons={weatherIcons} />
+										</div>
+										{/* HOUR */}
+										{data[day].type == "holiday" ? (
+											<div className="flex-1 row-start-2 row-end-[14] bg-gray-400 dark:bg-slate-700 flex justify-center items-center overflow-hidden">
+												<div className="-rotate-90">{data[day].name}</div>
+											</div>
+										) : (
+											Object.keys(data[day]).map((hour) => {
+												return (
+													<div key={hour} data-hour className={`flex-1 flex gap-[1px] bg-slate-300 dark:bg-slate-800 text-gray-900`}>
+														{/* CLASS */}
+														{Object.keys(data[day][hour])
+															.sort((a, b) => {
+																const aHidden = hidden[dataOptions.id]?.includes(data[day][hour][a].subjectID)
+																const bHidden = hidden[dataOptions.id]?.includes(data[day][hour][b].subjectID)
+																return aHidden - bHidden
+															})
+															.map((hourclass) => {
+																const classHidden = hidden[dataOptions.id]?.includes(data[day][hour][hourclass].subjectID)
+																return (
+																	<Class
+																		key={data[day][hour][hourclass].id}
+																		curHour={data[day][hour][hourclass]}
+																		compareData={{ thisHour: data[day][hour], nextHour: data[day][[parseInt(hour) + 1]] }}
+																		classHidden={classHidden}
+																		editMode={editMode}
+																		setHidden={setHidden}
+																		dataOptions={dataOptions}
+																		setDataOptions={setDataOptions}
+																		focus={focus}
+																		setFocus={setFocus}
+																		infoData={searchData}
+																	/>
+																)
+															})}
+													</div>
+												)
+											})
+										)}
+									</div>
+								)
+							})}
+						</div>
+					</div>
+					<BackButton dataOptions={dataOptions} setDataOptions={setDataOptions} />
+				</>
+			)}
 			<div className="fixed left-1/2 bottom-0 px-4 py-2 text-gray-500 text-xs cursor-pointer select-none -translate-x-1/2 flex justify-between w-full box-border pointer-events-none">
 				<a className="mr-2 pointer-events-auto" href="https://bgpd.at" target={"_blank"}>
 					©bgpd.at
