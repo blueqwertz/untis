@@ -142,6 +142,7 @@ class Webuntis {
 		const formattedDate = targetDate.toISOString().slice(0, 10)
 		await this.fetch_all(formattedDate)
 		await this.db.submitCommit()
+		console.log(`  |- DONE / INDEX ${x} / TOTAL ${new Date() - currentDate}ms`)
 	}
 
 	auto_fetcher(range) {
