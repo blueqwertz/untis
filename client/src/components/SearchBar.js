@@ -25,7 +25,7 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions, se
 	}, [searchStared])
 
 	return (
-		<div className="max-w-[300px] sm:w-80 relative z-10" id="searchbar">
+		<div className="max-w-[300px] sm:w-80 relative z-10 flex" id="searchbar">
 			<input
 				type="text"
 				placeholder="Lehrer, Klasse, Raum"
@@ -70,7 +70,7 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions, se
 				}}
 				value={searchInput}
 			/>
-			<BiSearch className="absolute top-1/2 -translate-y-1/2 right-2 w-5 h-5 text-gray-500 dark:text-slate-400" />
+			<BiSearch className="absolute top-1/2 -translate-y-1/2 right-3 w-4 h-4 text-gray-500 dark:text-slate-400" />
 			<div className={`absolute mt-1 top-full right-0 w-full min-w-[230px] bg-gray-400 dark:bg-slate-500 origin-top-right transition-all ${(results.length > 0) & showOptions ? "" : "scale-90 opacity-0 pointer-events-none"}`}>
 				{results.map((result, index) => {
 					if (result.type == "Lehrer") {

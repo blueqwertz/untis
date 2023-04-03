@@ -5,6 +5,7 @@ import Loader from "./Loader"
 import SideBar from "./SideBar"
 import BackButton from "./BackButton"
 import WeatherDisplay from "./WeatherDisplay"
+import Holiday from "./Holiday"
 
 function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	const [searchData, setSearchData] = useState([])
@@ -40,15 +41,19 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 		if (isLeftSwipe) {
 			const newDate = new Date(dataOptions.date)
 			newDate.setHours(12)
-			newDate.setDate(newDate.getDate() + 7)
-			await setDataOptions({ ...dataOptions, date: newDate.toISOString().slice(0, 10) })
-			setAnimationDirection("right")
+			if (document.body.getAttribute("data-day-view") == "false") {
+				newDate.setDate(newDate.getDate() + 7)
+				await setDataOptions({ ...dataOptions, date: newDate.toISOString().slice(0, 10) })
+				setAnimationDirection("right")
+			}
 		} else if (isRightSwipe) {
 			const newDate = new Date(dataOptions.date)
 			newDate.setHours(12)
-			newDate.setDate(newDate.getDate() - 7)
-			await setDataOptions({ ...dataOptions, date: newDate.toISOString().slice(0, 10) })
-			setAnimationDirection("left")
+			if (document.body.getAttribute("data-day-view") == "false") {
+				newDate.setDate(newDate.getDate() - 7)
+				await setDataOptions({ ...dataOptions, date: newDate.toISOString().slice(0, 10) })
+				setAnimationDirection("left")
+			}
 		}
 	}
 
@@ -330,7 +335,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 			{isLoading ? (
 				<>
 					<div className="w-full flex items-center justify-center grow">
-						<Loader size={14} fill={"fill-gray-800 dark:fill-slate-400"} visible={true} />
+						<Loader size={12} fill={"fill-gray-800 dark:fill-slate-400"} visible={true} />
 					</div>
 				</>
 			) : (
@@ -359,9 +364,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 										</div>
 										{/* HOUR */}
 										{data[day].type == "holiday" ? (
-											<div className="flex-1 row-start-2 row-end-[14] bg-gray-400 dark:bg-slate-700 flex justify-center items-center overflow-hidden">
-												<div className="-rotate-90">{data[day].name}</div>
-											</div>
+											<Holiday holidayName={data[day].name} />
 										) : (
 											Object.keys(data[day]).map((hour) => {
 												return (

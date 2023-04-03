@@ -95,7 +95,7 @@ function Class({ curHour, compareData, classHidden, editMode, setHidden, dataOpt
 					}
 				}}
 				ref={container}
-				className={`flex-1 flex justify-center items-center cursor-pointer transition-opacity ${classHidden ? (editMode ? "opacity-60" : "hidden") : ""}`}
+				className={`flex-1 flex justify-center items-center cursor-pointer select-none transition-opacity ${classHidden ? (editMode ? "opacity-60" : "hidden") : ""}`}
 				data-state={curHour.status}
 			>
 				<div className="min-w-full min-h-full py-2 text-xs sm:text-sm flex justify-around items-center text-center flex-wrap relative">

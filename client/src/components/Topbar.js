@@ -48,7 +48,7 @@ function TopBar({ dataOptions, setDataOptions, editMode, setEditMode, searchStar
 	}, [])
 
 	return (
-		<header className="p-3 pl-5 sm:pl-8 bg-gray-300 dark:bg-slate-700 font-bold flex justify-between items-center gap-5">
+		<header className="p-3 pl-5 sm:pl-10 bg-gray-300 dark:bg-slate-700 font-bold flex justify-between items-center gap-5">
 			<div className="text-md md:text-xl flex flex-col shrink">
 				<div>BG/BRG</div>
 				<div className="-mt-2 font-light">Perchtoldsdorf</div>
