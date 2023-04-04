@@ -47,9 +47,9 @@ class Webuntis {
 		}
 	}
 
-	async fetch_groups() {
+	async fetch_groups(date) {
 		try {
-			const response = await this.fetchWithCookies("https://neilo.webuntis.com/WebUntis/api/public/timetable/weekly/pageconfig?type=1")
+			const response = await this.fetchWithCookies(`https://neilo.webuntis.com/WebUntis/api/public/timetable/weekly/pageconfig?type=1&date=${date}`)
 			response.data.data.elements.map((group) => {
 				this.db.addGroup(group.id, group.name)
 			})
@@ -124,7 +124,7 @@ class Webuntis {
 	}
 
 	async fetch_all(date) {
-		await this.fetch_groups()
+		await this.fetch_groups(date)
 		const groups = await this.db.getGroups()
 		for (let group of groups) {
 			const start = new Date()
