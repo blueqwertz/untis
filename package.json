@@ -14,5 +14,8 @@
 		"rooms"
 	],
 	"author": "blueqwertz",
-	"license": "ISC"
+	"license": "ISC",
+    "dependencies": {
+        "concurrently": "8.0.1"
+    }
 }
