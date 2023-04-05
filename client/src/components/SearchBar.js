@@ -79,6 +79,7 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions, se
 								key={index}
 								className={`m-[2px] pl-3 pr-1 py-2 flex items-center justify-start gap-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-slate-900 transition-colors ${index == searchIndex && results.length > 1 ? "bg-slate-300 dark:bg-slate-600" : "bg-gray-200 dark:bg-slate-800"}`}
 								onClick={() => {
+									setSearchIndex(-1)
 									setShowOptions(false)
 									setDataOptions({ ...dataOptions, id: result.id, type: "teacher", name: result.name, before: {} })
 								}}
@@ -103,8 +104,9 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions, se
 								key={index}
 								className={`m-[2px] pl-3 pr-1 py-2 flex items-center justify-start gap-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-slate-900 transition-colors ${index == searchIndex && results.length > 1 ? "bg-slate-300 dark:bg-slate-600" : "bg-gray-200 dark:bg-slate-800"}`}
 								onClick={(e) => {
-									setDataOptions({ ...dataOptions, id: result.id, type: result.type == "Klasse" ? "group" : "room", name: result.name, before: {} })
+									setSearchIndex(-1)
 									setShowOptions(false)
+									setDataOptions({ ...dataOptions, id: result.id, type: result.type == "Klasse" ? "group" : "room", name: result.name, before: {} })
 								}}
 							>
 								<div className="flex grow p-2 justify-center items-center rounded-full bg-gray-400 dark:bg-slate-700 text-gray-800 dark:text-gray-50">{result.type == "Klasse" ? <BiGroup /> : <RiDoorClosedLine />}</div>
