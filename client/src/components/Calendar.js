@@ -6,6 +6,7 @@ import SideBar from "./SideBar"
 import BackButton from "./BackButton"
 import WeatherDisplay from "./WeatherDisplay"
 import Holiday from "./Holiday"
+import { toast } from "react-hot-toast"
 
 function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	const [searchData, setSearchData] = useState([])
@@ -238,14 +239,13 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 			const [classRequest, holidayRequest] = await Promise.all([axios.post(`/data/${dataOptions.type}/${dataOptions.id}`, { date: date.toISOString().slice(0, 10) }), axios.post(`/data/holidays`, { date: date.toISOString().slice(0, 10) })])
 
 			const result = await formatData(classRequest.data, holidayRequest.data)
-			setErrMsg("")
 			await setDataContent(result)
 			await localStorage.setItem("data", JSON.stringify({ lastFetch: new Date(), data: result }))
 			setIsLoading(false)
 			setIsUpdating(false)
 			setLastFetch(new Date())
 		} catch (err) {
-			setErrMsg("Server wurde nicht erreicht.")
+			toast.error("Server wurde nicht erreicht")
 			localStorage.removeItem("dataOptions")
 
 			if (localStorage.getItem("data")) {

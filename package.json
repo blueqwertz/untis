@@ -15,7 +15,8 @@
 	],
 	"author": "blueqwertz",
 	"license": "ISC",
-    "dependencies": {
-        "concurrently": "8.0.1"
-    }
+	"dependencies": {
+		"concurrently": "8.0.1",
+		"react-hot-toast": "^2.4.0"
+	}
 }

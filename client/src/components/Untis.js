@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import Body from "./Body"
 import TopBar from "./Topbar"
 import { useParams, redirect, useNavigate } from "react-router-dom"
+import { Toaster } from "react-hot-toast"
 
 function Untis() {
 	const loadDataOptions = () => {
@@ -16,10 +17,13 @@ function Untis() {
 	const [searchStared, setSearchStared] = useState(localStorage.getItem("searchStar") ? JSON.parse(localStorage.getItem("searchStar")) : [])
 
 	return (
-		<div className="flex flex-col min-h-screen w-full dark:text-gray-50 text-gray-900">
-			<TopBar dataOptions={dataOptions} setDataOptions={setDataOptions} editMode={editMode} setEditMode={setEditMode} searchStared={searchStared} setSearchStared={setSearchStared} />
-			<Body dataOptions={dataOptions} setDataOptions={setDataOptions} editMode={editMode} setEditMode={setEditMode} />
-		</div>
+		<>
+			<Toaster position="top-left" />
+			<div className="flex flex-col min-h-screen w-full dark:text-gray-50 text-gray-900">
+				<TopBar dataOptions={dataOptions} setDataOptions={setDataOptions} editMode={editMode} setEditMode={setEditMode} searchStared={searchStared} setSearchStared={setSearchStared} />
+				<Body dataOptions={dataOptions} setDataOptions={setDataOptions} editMode={editMode} setEditMode={setEditMode} />
+			</div>
+		</>
 	)
 }
 

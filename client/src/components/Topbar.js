@@ -5,6 +5,7 @@ import { RiEditLine } from "react-icons/ri"
 import { searchDictionary } from "../utils/search"
 import axios from "../api/axios"
 import DatePicker from "./DatePicker"
+import { toast } from "react-hot-toast"
 
 function TopBar({ dataOptions, setDataOptions, editMode, setEditMode, searchStared, setSearchStared }) {
 	const [teacherData, setTeacherData] = useState({})
@@ -73,6 +74,9 @@ function TopBar({ dataOptions, setDataOptions, editMode, setEditMode, searchStar
 						className="w-6 h-6"
 						onClick={() => {
 							if (dataOptions.type == "group") {
+								if (editMode) {
+									toast.success("Einstellungen gespeichert")
+								}
 								setEditMode(!editMode)
 							}
 						}}
