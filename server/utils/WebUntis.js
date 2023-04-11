@@ -168,7 +168,7 @@ class Webuntis {
 				index += 1
 			}
 
-			await new Promise((resolve) => setTimeout(resolve, 1 * 1000))
+			await new Promise((resolve) => setTimeout(resolve, 15 * 1000))
 		}
 	}
 }
