@@ -145,31 +145,31 @@ class Webuntis {
 		console.log(`  |- DONE / INDEX ${x} / TOTAL ${new Date() - currentDate}ms`)
 	}
 
-	auto_fetcher(range) {
+	async auto_fetcher(range) {
 		var index = 0
-		const fetcher = async () => {
-			let fetched = false
-			index = index % 10000
-			for (let i = 0; i <= range; i++) {
-				if ((index - (Math.pow(2, i) - 1)) % Math.pow(2, i + 1) == 0) {
-					fetched = true
-					try {
+
+		while (true) {
+			try {
+				let fetched = false
+				index = index % 10000
+				for (let i = 0; i <= range; i++) {
+					if ((index - (Math.pow(2, i) - 1)) % Math.pow(2, i + 1) == 0) {
+						fetched = true
 						await this.fetch_week(i)
-					} catch (err) {
-						console.log(err)
+						break
 					}
-					break
 				}
+				if (!fetched) {
+					this.fetch_week(0)
+				}
+			} catch (err) {
+				console.log(err)
+			} finally {
+				index += 1
 			}
-			if (!fetched) {
-				this.fetch_week(0)
-			}
-			index += 1
-			setTimeout(() => {
-				fetcher()
-			}, 5 * 1000)
+
+			await new Promise((resolve) => setTimeout(resolve, 1 * 1000))
 		}
-		fetcher()
 	}
 }
 
