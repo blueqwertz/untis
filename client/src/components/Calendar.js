@@ -298,6 +298,7 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 		console.log(`FETCHING ${new Date(dataOptions.date).toISOString().slice(0, 10)}`)
 		setIsUpdating(true)
 		getCalendarData(false)
+		fetchWeather()
 	}, [fetchNotifier])
 
 	useEffect(() => {
