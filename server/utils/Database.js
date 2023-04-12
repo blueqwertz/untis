@@ -1046,7 +1046,7 @@ function getClassesByGroupAndDateRange(groupId, startDate, endDate) {
 			JOIN Rooms r ON c.room_id = r.id
 			JOIN Classes_Groups cg ON c.id = cg.class_id
 			JOIN Groups g ON cg.group_id = g.id
-			WHERE cg.id = ?
+			WHERE cg.group_id = ?
 				AND c.date BETWEEN ? AND ?
 			ORDER BY (case c.state 
 			when "EXAM" then 1
