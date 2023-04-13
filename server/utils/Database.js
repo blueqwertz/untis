@@ -655,7 +655,7 @@ const teacherData = {
 		type: "teacher",
 	},
 	SCB: {
-		name: "Schwarz (b)",
+		name: "Schwarz",
 		firstName: "Bettina",
 		shortName: "SCB",
 		link: "https://bgperchtoldsdorf.at/wp-content/uploads/2017/08/SCB-2022.png",
