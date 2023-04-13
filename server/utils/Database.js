@@ -1038,6 +1038,7 @@ function getClassesByGroupAndDateRange(groupId, startDate, endDate) {
 			JOIN Groups g ON cg.group_id = g.id
 			WHERE cg.group_id = ?
 				AND c.date BETWEEN ? AND ?
+				GROUP by c.id
 			ORDER BY (case c.state 
 			when "EXAM" then 1
 			when "SUBSTITUTION" then 2
@@ -1072,6 +1073,7 @@ function getClassesByTeacherAndDateRange(teacherId, startDate, endDate) {
 			JOIN Groups g ON cg.group_id = g.id
 			WHERE t.id = ?
 				AND c.date BETWEEN ? AND ?
+				GROUP by c.id
 			ORDER BY (case c.state 
 			when "EXAM" then 1
 			when "SUBSTITUTION" then 2
@@ -1106,6 +1108,7 @@ function getClassesByRoomAndDateRange(roomId, startDate, endDate) {
 			JOIN Groups g ON cg.group_id = g.id
 			WHERE r.id = ?
 				AND c.date BETWEEN ? AND ?
+				GROUP by c.id
 			ORDER BY (case c.state 
 			when "EXAM" then 1
 			when "SUBSTITUTION" then 2
