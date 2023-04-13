@@ -1026,20 +1026,10 @@ function addClass(id, subject, lesson_id, teacher, room, startTime, endTime, gro
 	)
 }
 
-function removeDuplicatesBy(keyFn, array) {
-	var mySet = new Set()
-	return array.filter(function (x) {
-		var key = keyFn(x),
-			isNew = !mySet.has(key)
-		if (isNew) mySet.add(key)
-		return isNew
-	})
-}
-
 function getClassesByGroupAndDateRange(groupId, startDate, endDate) {
 	return new Promise((resolve, reject) => {
 		const sql = `
-			SELECT c.id, s.name AS subject, c.lesson_id as subjectID, t.name AS teacher, r.name AS room, c.start_time as startTime, c.end_time as endTime, c.date, g.name AS groupName, c.group_names as groupIDS, c.info, c.state
+			SELECT DISTINCT c.id, s.name AS subject, c.lesson_id as subjectID, t.name AS teacher, r.name AS room, c.start_time as startTime, c.end_time as endTime, c.date, g.name AS groupName, c.group_names as groupIDS, c.info, c.state
 			FROM Classes c
 			JOIN Subjects s ON c.subject_id = s.id
 			JOIN Teachers t ON c.teacher_id = t.id
@@ -1057,13 +1047,14 @@ function getClassesByGroupAndDateRange(groupId, startDate, endDate) {
 			when "STANDARD" then 3
 			when "FREE" then 4
 			when "CANCEL" then 4
-			else 8 end)`
+			else 8 end)
+			`
 
 		db.all(sql, [groupId, startDate, endDate], (err, rows) => {
 			if (err) {
 				reject(err)
 			} else {
-				resolve(removeDuplicatesBy((x) => x.id, rows))
+				resolve(rows)
 			}
 		})
 	})
@@ -1072,7 +1063,7 @@ function getClassesByGroupAndDateRange(groupId, startDate, endDate) {
 function getClassesByTeacherAndDateRange(teacherId, startDate, endDate) {
 	return new Promise((resolve, reject) => {
 		const sql = `
-      		SELECT c.id, s.name AS subject, c.lesson_id as subjectID, t.name AS teacher, r.name AS room, c.start_time as startTime, c.end_time as endTime, c.date, g.name AS groupName, c.group_names as groupIDS, c.info, c.state
+      		SELECT DISTINCT c.id, s.name AS subject, c.lesson_id as subjectID, t.name AS teacher, r.name AS room, c.start_time as startTime, c.end_time as endTime, c.date, g.name AS groupName, c.group_names as groupIDS, c.info, c.state
 			FROM Classes c
 			JOIN Subjects s ON c.subject_id = s.id
 			JOIN Teachers t ON c.teacher_id = t.id
@@ -1097,7 +1088,7 @@ function getClassesByTeacherAndDateRange(teacherId, startDate, endDate) {
 			if (err) {
 				reject(err)
 			} else {
-				resolve(removeDuplicatesBy((x) => x.id, rows))
+				resolve(rows)
 			}
 		})
 	})
@@ -1130,7 +1121,7 @@ function getClassesByRoomAndDateRange(roomId, startDate, endDate) {
 			if (err) {
 				reject(err)
 			} else {
-				resolve(removeDuplicatesBy((x) => x.id, rows))
+				resolve(rows)
 			}
 		})
 	})
