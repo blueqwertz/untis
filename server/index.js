@@ -23,8 +23,6 @@ app.get("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "../client/build/index.html"))
 })
 
-app.use(cors(corsOptions))
-
 app.use("/api/data", require("./routes/DataRouter"))
 
 app.get("/api", (req, res) => {

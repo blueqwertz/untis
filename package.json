@@ -4,7 +4,8 @@
 	"description": "",
 	"scripts": {
 		"start": "concurrently 'npm run start --prefix client' 'npm run start --prefix server'",
-		"dev": "concurrently 'npm run start --prefix client' 'npm run dev --prefix server'"
+		"dev": "concurrently 'npm run start --prefix client' 'npm run dev --prefix server'",
+		"build": "npm run build --prefix client"
 	},
 	"keywords": [
 		"school",

@@ -129,7 +129,7 @@ class Webuntis {
 		for (let group of groups) {
 			const start = new Date()
 			const result = await this.fetch_group_id(group.id, date)
-			// console.log(`  |- FETCHING GROUP ID: ${group.id} / NAME: ${group.name.padEnd(3, " ")} / DATE: ${date} / ${new Date() - start}ms`)
+			console.log(`  |- FETCHING GROUP ID: ${group.id} / NAME: ${group.name.padEnd(3, " ")} / DATE: ${date} / ${new Date() - start}ms`)
 		}
 	}
 

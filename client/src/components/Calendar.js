@@ -7,6 +7,7 @@ import BackButton from "./BackButton"
 import WeatherDisplay from "./WeatherDisplay"
 import Holiday from "./Holiday"
 import { toast } from "react-hot-toast"
+import * as axiosMod from "axios"
 
 function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	const [searchData, setSearchData] = useState([])
@@ -24,6 +25,8 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 	const [touchStart, setTouchStart] = useState(null)
 	const [touchEnd, setTouchEnd] = useState(null)
 	const [animationDirection, setAnimationDirection] = useState("")
+
+	const controller = new AbortController()
 
 	const minSwipeDistance = 50
 
@@ -236,15 +239,17 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 		try {
 			var date = new Date(dataOptions.date)
 
-			const [classRequest, holidayRequest] = await Promise.all([axios.post(`/data/${dataOptions.type}/${dataOptions.id}`, { date: date.toISOString().slice(0, 10) }), axios.post(`/data/holidays`, { date: date.toISOString().slice(0, 10) })])
+			const [classRequest, holidayRequest] = await Promise.all([axios.post(`/data/${dataOptions.type}/${dataOptions.id}`, { date: date.toISOString().slice(0, 10) }, { signal: controller.signal }), axios.post(`/data/holidays`, { date: date.toISOString().slice(0, 10) }, { signal: controller.signal })])
 
 			const result = await formatData(classRequest.data, holidayRequest.data)
-			await setDataContent(result)
-			await localStorage.setItem("data", JSON.stringify({ lastFetch: new Date(), data: result }))
+			setDataContent(result)
+			localStorage.setItem("data", JSON.stringify({ lastFetch: new Date(), data: result }))
 			setIsLoading(false)
 			setIsUpdating(false)
 			setLastFetch(new Date())
 		} catch (err) {
+			console.log(err.code)
+
 			toast.error("Server wurde nicht erreicht")
 			localStorage.removeItem("dataOptions")
 
@@ -256,10 +261,6 @@ function Calendar({ dataOptions, setDataOptions, editMode, setEditMode }) {
 				setLastFetch(new Date(lastFetch))
 				setIsLoading(false)
 			}
-
-			setTimeout(() => {
-				getCalendarData(false)
-			}, 5000)
 		}
 	}
 
