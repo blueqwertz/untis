@@ -1008,15 +1008,27 @@ function addClass(id, subject, lesson_id, teacher, room, startTime, endTime, gro
 
 				groups.forEach((group) => {
 					db.run(
-						`INSERT OR REPLACE INTO Classes_Groups (class_id, group_id)
-             VALUES (?, ?)`,
+						`
+					SELECT class_id, group_id FROM Classes_Groups WHERE class_id = ? AND group_id = ?
+					`,
 						[classId, group],
-						(err) => {
+						(err, row) => {
 							if (err) {
 								if (debug) {
-									console.log(err.message)
+									console.log(err)
 								}
-								return
+							}
+							if (!row) {
+								db.run(`INSERT OR REPLACE INTO Classes_Groups (class_id, group_id) VALUES (?, ?)`, [classId, group], (err) => {
+									if (err) {
+										if (debug) {
+											console.log(err.message)
+										}
+										return
+									}
+								})
+							} else {
+								console.log("Skipping")
 							}
 						}
 					)
