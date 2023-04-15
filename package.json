@@ -5,7 +5,7 @@
 	"scripts": {
 		"start": "concurrently 'npm run start --prefix client' 'npm run start --prefix server'",
 		"dev": "concurrently 'npm run start --prefix client' 'npm run dev --prefix server'",
-		"build": "npm install --prefx client && npm run build --prefix client"
+		"build": "(cd client && npm install) && npm run build --prefix client"
 	},
 	"keywords": [
 		"school",
@@ -17,8 +17,8 @@
 	"author": "blueqwertz",
 	"license": "ISC",
 	"dependencies": {
+		"client": "^0.0.1",
 		"concurrently": "8.0.1",
-		"react-hot-toast": "^2.4.0",
-		"react-scripts": "^5.0.1"
+		"react-hot-toast": "^2.4.0"
 	}
 }
