@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react"
 import { RiEyeLine, RiEyeOffLine, RiLink } from "react-icons/ri"
+import { HiArrowUpRight } from "react-icons/hi2"
 import { FaInfoCircle } from "react-icons/fa"
 
 function Class({ curHour, compareData, classHidden, editMode, setHidden, dataOptions, setDataOptions, focus, setFocus, infoData }) {
@@ -159,7 +160,7 @@ function Class({ curHour, compareData, classHidden, editMode, setHidden, dataOpt
 								<div className="whitespace-nowrap font-light flex items-center gap-[2px] group">
 									<span className="transition-[transform] translate-x-3 group-hover:translate-x-0">{curHour.room}</span>
 									<div className="overflow-hidden w-3 h-3">
-										<RiLink className="text-xs text-gray-500 dark:text-gray-300 w-full h-full -translate-x-full transition-[transform] group-hover:translate-x-0" />
+										<HiArrowUpRight className="text-xs text-gray-500 dark:text-gray-300 w-full h-full -translate-x-full transition-[transform] group-hover:translate-x-0" />
 									</div>
 								</div>
 							</div>
@@ -189,7 +190,7 @@ function Class({ curHour, compareData, classHidden, editMode, setHidden, dataOpt
 							</div>
 							<div className="whitespace-nowrap font-light flex items-center gap-[2px]">
 								<div className="overflow-hidden w-3 h-3">
-									<RiLink className="text-xs text-gray-500 dark:text-gray-300 w-full h-full translate-x-full transition-[transform] group-hover:translate-x-0" />
+									<HiArrowUpRight className="text-xs text-gray-500 dark:text-gray-300 w-full h-full translate-x-full transition-[transform] group-hover:translate-x-0" />
 								</div>
 								<span className="transition-[transform] -translate-x-3 group-hover:translate-x-0">{teacherObj?.lastName || curHour.teacher}</span>
 							</div>
