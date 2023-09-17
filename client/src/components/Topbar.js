@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import SearchBar from "./SearchBar"
-import { AiOutlineEdit, AiOutlineCalendar } from "react-icons/ai"
+import { AiOutlineCalendar } from "react-icons/ai"
 import { RiEditLine } from "react-icons/ri"
 import { searchDictionary } from "../utils/search"
 import axios from "../api/axios"
@@ -50,13 +50,14 @@ function TopBar({ dataOptions, setDataOptions, editMode, setEditMode, searchStar
 
 	return (
 		<header className="p-3 pl-5 sm:pl-10 bg-gray-300 dark:bg-slate-700 font-bold flex justify-between items-center gap-5">
-			<div className="text-md md:text-xl flex flex-col shrink">
+			<div className="text-md md:text-xl flex flex-col shrink md:flex-1">
 				<div>BG/BRG</div>
 				<div className="-mt-2 font-light">Perchtoldsdorf</div>
 				{/* <div className="-mt-2 border-b md:border-b-2 border-b-gray-900 dark:border-b-gray-50">Perchtoldsdorf</div> */}
 				{/* <div className="font-medium -mt-[1px]">Stundenplan</div> */}
 			</div>
-			<div className="flex justify-center items-center gap-3">
+			<SearchBar searchFunction={searchDictionary} searchData={teacherData} dataOptions={dataOptions} setDataOptions={setDataOptions} searchStared={searchStared} setSearchStared={setSearchStared} />
+			<div className="flex justify-end items-center gap-3 md:flex-1">
 				<div className="relative" id="datepicker">
 					<div
 						onClick={() => {
@@ -82,7 +83,6 @@ function TopBar({ dataOptions, setDataOptions, editMode, setEditMode, searchStar
 						}}
 					/>
 				</div>
-				<SearchBar searchFunction={searchDictionary} searchData={teacherData} dataOptions={dataOptions} setDataOptions={setDataOptions} searchStared={searchStared} setSearchStared={setSearchStared} />
 			</div>
 		</header>
 	)

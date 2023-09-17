@@ -116,18 +116,7 @@ function Class({ curHour, compareData, classHidden, editMode, setHidden, dataOpt
 					) : (
 						<></>
 					)}
-					{dataOptions.type == "group" ? (
-						<div
-							onClick={() => {
-								addClassToHidden(dataOptions.id, curHour.subjectID)
-							}}
-							className={`absolute flex justify-center items-center top-0 right-0 text-gray-300 hover:scale-110 active:scale-105 transition-[transform] translate-x-1/3 -translate-y-1/3 rounded-full bg-slate-600 z-10 p-1 ${editMode ? "scale-100" : "scale-0"}`}
-						>
-							{classHidden ? <RiEyeOffLine /> : <RiEyeLine />}
-						</div>
-					) : (
-						<></>
-					)}
+					{dataOptions.type == "group" ? <div className={`absolute flex justify-center items-center top-0 right-0 text-gray-300 hover:scale-110 active:scale-105 transition-[transform] translate-x-1/3 -translate-y-1/3 rounded-full bg-slate-600 z-10 p-1 ${editMode ? "scale-100" : "scale-0"}`}>{classHidden ? <RiEyeOffLine /> : <RiEyeLine />}</div> : <></>}
 					{/* TOOLTIP */}
 					<div
 						className={`max-w-[300px] rounded-md cursor-default absolute drop-shadow-xl py-2 px-3 sm:py-2 sm:px-4 

@@ -12,7 +12,7 @@ function Untis() {
 		return result
 	}
 
-	const [dataOptions, setDataOptions] = useState(localStorage.getItem("dataOptions") ? loadDataOptions() : { id: 1810, type: "group", name: "8BD", date: new Date().toISOString().slice(0, 10), before: {}, searchFavourites: [] })
+	const [dataOptions, setDataOptions] = useState(localStorage.getItem("dataOptions") ? loadDataOptions() : { id: 2045, type: "group", name: "8BD", date: new Date().toISOString().slice(0, 10), before: {}, searchFavourites: [] })
 	const [editMode, setEditMode] = useState(false)
 	const [searchStared, setSearchStared] = useState(localStorage.getItem("searchStar") ? JSON.parse(localStorage.getItem("searchStar")) : [])
 

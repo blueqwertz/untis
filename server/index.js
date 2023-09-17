@@ -1,6 +1,4 @@
 const express = require("express")
-const cors = require("cors")
-const corsOptions = require("./config/corsOptions")
 const path = require("path")
 const { logger } = require("./middleware/logEvents")
 
@@ -8,6 +6,18 @@ const db = require("./utils/Database")
 
 const Webuntis = require("./utils/WebUntis")
 const webuntis = new Webuntis(db)
+
+// async function fetchWeeksSequentially(i) {
+// 	if (i >= 52) {
+// 		return
+// 	}
+// 	await webuntis.fetch_week(i)
+// 	setTimeout(() => {
+// 		fetchWeeksSequentially(i + 1)
+// 	}, 500)
+// }
+
+// fetchWeeksSequentially(0)
 
 webuntis.auto_fetcher(10)
 
@@ -25,7 +35,7 @@ app.get("*", (req, res) => {
 
 app.use("/api/data", require("./routes/DataRouter"))
 
-app.get("/api", (req, res) => {
+app.post("/api", (req, res) => {
 	res.send({ message: "Successful response." })
 })
 

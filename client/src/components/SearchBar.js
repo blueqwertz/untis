@@ -71,7 +71,7 @@ function SearchBar({ searchFunction, searchData, dataOptions, setDataOptions, se
 				value={searchInput}
 			/>
 			<BiSearch className="absolute top-1/2 -translate-y-1/2 right-3 w-4 h-4 text-gray-500 dark:text-slate-400" />
-			<div className={`absolute mt-1 top-full right-0 w-full min-w-[230px] bg-gray-400 dark:bg-slate-500 origin-top-right transition-all ${(results.length > 0) & showOptions ? "" : "scale-90 opacity-0 pointer-events-none"}`}>
+			<div className={`absolute mt-1 top-full right-0 w-full min-w-[230px] bg-gray-400 dark:bg-slate-500 origin-top transition-all ${(results.length > 0) & showOptions ? "" : "scale-90 opacity-0 pointer-events-none"}`}>
 				{results.map((result, index) => {
 					if (result.type == "Lehrer") {
 						return (
